@@ -10,6 +10,18 @@ public class GameLogic : MonoBehaviour
     private bool isPlayerCaught = false;
     private bool isGlancing = false;
 
+    private bool League = true;
+    private bool Excel = false;
+
+    private void OnEnable()
+    {
+        AltTab.OnAltTab += DoAltTab;
+    }
+    private void OnDisable()
+    {
+        AltTab.OnAltTab -= DoAltTab;
+    }
+
     private void Update()
     {
         bool isGlancePlaying = IsPlayingAnimation(glanceAnimationName);
@@ -31,7 +43,7 @@ public class GameLogic : MonoBehaviour
 
     private void CheckForGame()
     {
-        if (AltTab.League.enabled)
+        if (League)
             isPlayerCaught = true;
     }
 
@@ -48,5 +60,11 @@ public class GameLogic : MonoBehaviour
     private bool IsPlayingAnimation(string animationName)
     {
         return bossAnimator.GetCurrentAnimatorStateInfo(0).IsName(animationName);
+    }
+
+    void DoAltTab(bool excel, bool league)
+    {
+        Excel = excel;
+        League = league;
     }
 }

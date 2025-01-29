@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 public class AltTab : MonoBehaviour
 {
-    public static SpriteRenderer Excel { get; private set; }
-    public static SpriteRenderer League { get; private set; }
+    public SpriteRenderer Excel;
+    public SpriteRenderer League;
+
+    public static event Action<bool,bool> OnAltTab;
 
     private void Update()
     {
@@ -15,6 +18,7 @@ public class AltTab : MonoBehaviour
     {
         ToggleVisibility(Excel);
         ToggleVisibility(League);
+        OnAltTab.Invoke(Excel.enabled, League.enabled);
     }
 
     private void ToggleVisibility(SpriteRenderer spriteRenderer)

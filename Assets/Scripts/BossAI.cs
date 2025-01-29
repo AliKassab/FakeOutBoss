@@ -1,108 +1,156 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 public class BossAI : MonoBehaviour
 {
-    public enum BossState { Sitting, Standing, Walking, Angry, Sleeping, Glancing }
-    private BossState currentState;
-
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
-    [SerializeField] private List<Transform> waypoints;
-    [SerializeField] private float walkSpeed = 2f;
-    [SerializeField] private Transform player;
-    [SerializeField] private float glancingDistance = 5f; // Distance to trigger glancing
+    [SerializeField] private Transform waypoint;  // Single waypoint
+    [SerializeField] private float walkSpeed = 1f;
 
-    private Transform targetWaypoint;
-    private bool isReturning = false;
-    private bool isGlancing = false;
+    [SerializeField] private float minStateDelay = 1f; // Minimum delay
+    [SerializeField] private float maxStateDelay = 3f; // Maximum delay
+
+    private enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
+    private Action currentAction;
+
+    private bool isMoving = false; // Flag for movement
+    private float actionTimer = 0f; // Timer to handle delays
+    private Vector3 targetPosition;
 
     private void Start()
     {
-        ChangeState(BossState.Sitting);
+        // Initialize random seed to be based on system tick count
+        Random.InitState(System.Environment.TickCount);
+
+        // Start the sequence from sitting
+        currentAction = Action.Sitting;
+        actionTimer = GetRandomDelay();
+        targetPosition = deskPosition.position;
+        ChangeAnimation();
     }
 
     private void Update()
     {
-        HandleStateBehavior();
-    }
+        // Handle each action step
+        actionTimer -= Time.deltaTime;
 
-    private void HandleStateBehavior()
-    {
-        switch (currentState)
+        if (actionTimer <= 0f)
         {
-            case BossState.Sitting:
-                if (Random.value < 0.002f) ChangeState(BossState.Standing);
-                break;
-
-            case BossState.Standing:
-                if (Random.value < 0.01f) StartCoroutine(WalkRoutine());
-                break;
-
-            case BossState.Walking:
-                MoveToTarget();
-                break;
-
-            case BossState.Sleeping:
-                if (Random.value < 0.003f) ChangeState(BossState.Standing);
-                break;
-        }
-    }
-
-    private IEnumerator WalkRoutine()
-    {
-        ChangeState(BossState.Standing);
-        yield return new WaitForSeconds(1.5f); // Wait before walking
-
-        targetWaypoint = waypoints[Random.Range(0, waypoints.Count)];
-        isReturning = false;
-        isGlancing = Vector3.Distance(targetWaypoint.position, player.position) < glancingDistance;
-
-        ChangeState(BossState.Walking);
-    }
-
-    private void MoveToTarget()
-    {
-        if (targetWaypoint == null) return;
-
-        transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, walkSpeed * Time.deltaTime);
-
-        if (isGlancing)
-        {
-            animator.Play("Glance");
-            isGlancing = false; // Only glance once per walk cycle
-        }
-
-        if (Vector3.Distance(transform.position, targetWaypoint.position) < 0.1f)
-        {
-            if (!isReturning)
+            switch (currentAction)
             {
-                StartCoroutine(ReturnToDeskRoutine());
-            }
-            else
-            {
-                ChangeState(BossState.Sitting);
+                case Action.Sitting:
+                    StartStanding();
+                    break;
+
+                case Action.Standing:
+                    StartWalkingToWaypoint();
+                    break;
+
+                case Action.WalkingToWaypoint:
+                    MoveToWaypoint();
+                    break;
+
+                case Action.Looking:
+                    StartWalkingBackToDesk();
+                    break;
+
+                case Action.WalkingBackToDesk:
+                    MoveBackToDesk();
+                    break;
             }
         }
     }
 
-    private IEnumerator ReturnToDeskRoutine()
+    private void StartStanding()
     {
-        yield return new WaitForSeconds(2f); // Pause before returning
-        targetWaypoint = deskPosition;
-        isReturning = true;
-        ChangeState(BossState.Walking);
+        currentAction = Action.Standing;
+        actionTimer = GetRandomDelay();
+        ChangeAnimation();
     }
 
-    private void ChangeState(BossState newState)
+    private void StartWalkingToWaypoint()
     {
-        if (currentState == newState) return;
+        currentAction = Action.WalkingToWaypoint;
+        actionTimer = 0f; // No delay when starting to walk
+        targetPosition = waypoint.position;
+        isMoving = true;
+        LookTowards(targetPosition);  // Look at the waypoint
+        ChangeAnimation();
+    }
 
-        currentState = newState;
-        if (newState != BossState.Glancing) // Avoid overriding glancing
+    private void MoveToWaypoint()
+    {
+        if (isMoving)
         {
-            animator.Play(newState.ToString()); // Play matching animation
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                isMoving = false;
+                currentAction = Action.Looking;
+                actionTimer = GetRandomDelay();
+                ChangeAnimation();
+            }
         }
+    }
+
+    private void StartWalkingBackToDesk()
+    {
+        currentAction = Action.WalkingBackToDesk;
+        actionTimer = 0f; // No delay when walking back to the desk
+        targetPosition = deskPosition.position;
+        isMoving = true;
+        LookTowards(targetPosition);  // Look at the desk
+        ChangeAnimation();
+    }
+
+    private void MoveBackToDesk()
+    {
+        if (isMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                isMoving = false;
+                currentAction = Action.Sitting;
+                actionTimer = GetRandomDelay();
+                ChangeAnimation();
+            }
+        }
+    }
+
+    private void LookTowards(Vector3 targetPosition)
+    {
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        transform.forward = new Vector3(direction.x, 0, direction.z);  // Make boss look at target
+    }
+
+    private void ChangeAnimation()
+    {
+        switch (currentAction)
+        {
+            case Action.Sitting:
+                animator.Play("Sitting");
+                break;
+            case Action.Standing:
+                animator.Play("Standing");
+                break;
+            case Action.WalkingToWaypoint:
+                animator.Play("Walking");
+                break;
+            case Action.Looking:
+                animator.Play("Look");
+                break;
+            case Action.WalkingBackToDesk:
+                animator.Play("Walking");
+                break;
+        }
+    }
+
+    // Generates a random delay between minStateDelay and maxStateDelay
+    private float GetRandomDelay()
+    {
+        return Random.Range(minStateDelay, maxStateDelay);
     }
 }
