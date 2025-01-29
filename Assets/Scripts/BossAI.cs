@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BossAI : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
-    [SerializeField] private Transform waypoint;  // Single waypoint
+    [SerializeField] private List<Transform> waypoint;  // Single waypoint
     [SerializeField] private float walkSpeed = 1f;
 
     [SerializeField] private float minLookingDelay = 1f; // Minimum delay
@@ -75,7 +76,8 @@ public class BossAI : MonoBehaviour
     {
         currentAction = Action.WalkingToWaypoint;
         actionTimer = 0f; // No delay when starting to walk
-        targetPosition = waypoint.position;
+        int index = GetRandomIndex();
+        targetPosition = waypoint[index].position;
         isMoving = true;
         LookTowards(targetPosition);  // Look at the waypoint
         ChangeAnimation();
@@ -159,6 +161,10 @@ public class BossAI : MonoBehaviour
     private float GetRandomDelayStanding()
     {
         return Random.Range(minStandDelay, maxStandDelay);
+    }
+    private int GetRandomIndex()
+    {
+        return Random.Range(0, waypoint.Count);
     }
 
 }
