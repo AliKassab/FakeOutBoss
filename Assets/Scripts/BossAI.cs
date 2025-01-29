@@ -7,11 +7,14 @@ public class BossAI : MonoBehaviour
     [SerializeField] private Transform waypoint;  // Single waypoint
     [SerializeField] private float walkSpeed = 1f;
 
-    [SerializeField] private float minStateDelay = 1f; // Minimum delay
-    [SerializeField] private float maxStateDelay = 3f; // Maximum delay
+    [SerializeField] private float minLookingDelay = 1f; // Minimum delay
+    [SerializeField] private float maxLookingDelay = 3f; // Maximum delay
 
-    private enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
-    private Action currentAction;
+    [SerializeField] private float minStandDelay = 1f; // Minimum delay
+    [SerializeField] private float maxStandDelay = 3f; // Maximum delay
+
+    public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
+    public Action currentAction;
 
     private bool isMoving = false; // Flag for movement
     private float actionTimer = 0f; // Timer to handle delays
@@ -64,7 +67,7 @@ public class BossAI : MonoBehaviour
     private void StartStanding()
     {
         currentAction = Action.Standing;
-        actionTimer = GetRandomDelay();
+        actionTimer = GetRandomDelayStanding();
         ChangeAnimation();
     }
 
@@ -151,6 +154,11 @@ public class BossAI : MonoBehaviour
     // Generates a random delay between minStateDelay and maxStateDelay
     private float GetRandomDelay()
     {
-        return Random.Range(minStateDelay, maxStateDelay);
+        return Random.Range(minLookingDelay, maxLookingDelay);
     }
+    private float GetRandomDelayStanding()
+    {
+        return Random.Range(minStandDelay, maxStandDelay);
+    }
+
 }

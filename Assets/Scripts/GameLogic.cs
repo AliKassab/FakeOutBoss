@@ -8,7 +8,6 @@ public class GameLogic : MonoBehaviour
     [SerializeField] private string glanceAnimationName = "Glance";
 
     private bool isPlayerCaught = false;
-    private bool isGlancing = false;
 
     private bool League = true;
     private bool Excel = false;
@@ -24,42 +23,20 @@ public class GameLogic : MonoBehaviour
 
     private void Update()
     {
-        bool isGlancePlaying = IsPlayingAnimation(glanceAnimationName);
-
-        if (isGlancePlaying && !isGlancing)
-            StartGlance();
-        else if (!isGlancePlaying && isGlancing)
-            EndGlance();
-    }
-
-    private void StartGlance()
-    {
-        isGlancing = true;
-        CheckForGame();
-
-        if (isPlayerCaught)
-            RestartLevel();
+        bool isLooking = (bossAnimator.gameObject.GetComponent<BossAI>().currentAction == BossAI.Action.Looking);
+        if (isLooking)
+            CheckForGame();
     }
 
     private void CheckForGame()
     {
         if (League)
-            isPlayerCaught = true;
+            RestartLevel();
     }
 
     private void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    private void EndGlance()
-    {
-        isGlancing = false;
-    }
-
-    private bool IsPlayingAnimation(string animationName)
-    {
-        return bossAnimator.GetCurrentAnimatorStateInfo(0).IsName(animationName);
     }
 
     void DoAltTab(bool excel, bool league)
