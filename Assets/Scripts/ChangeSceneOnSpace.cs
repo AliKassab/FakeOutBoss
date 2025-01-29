@@ -6,6 +6,7 @@ public class ChangeSceneOnSpace : MonoBehaviour
     [SerializeField] Camera menuCamera;
     [SerializeField] Camera playerCamera;
     [SerializeField] GameObject canvas;
+    [SerializeField] GameObject timer;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -13,6 +14,8 @@ public class ChangeSceneOnSpace : MonoBehaviour
             playerCamera = Camera.main;
             menuCamera.enabled = false;
             canvas.SetActive(false);
+            timer.SetActive(true);
+
         }
     }
 }
