@@ -5,6 +5,7 @@ public class BossAI : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
+<<<<<<< Updated upstream
     [SerializeField] private List<Transform> waypoint;  // Single waypoint
     [SerializeField] private float walkSpeed = 1f;
 
@@ -16,17 +17,26 @@ public class BossAI : MonoBehaviour
 
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
     public Action currentAction;
+=======
+    [SerializeField] private Transform waypoint;
+    [SerializeField] private float walkSpeed = 1f;
 
-    private bool isMoving = false; // Flag for movement
-    private float actionTimer = 0f; // Timer to handle delays
+    [SerializeField] private float minStateDelay = 1f;
+    [SerializeField] private float maxStateDelay = 3f;
+
+    [SerializeField] private KeyChallengeManager keyChallengeManager; // Reference to KeyChallengeManager
+>>>>>>> Stashed changes
+
+    public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
+    public Action currentAction;
+
+    private bool isMoving = false;
+    private float actionTimer = 0f;
     private Vector3 targetPosition;
 
     private void Start()
     {
-        // Initialize random seed to be based on system tick count
         Random.InitState(System.Environment.TickCount);
-
-        // Start the sequence from sitting
         currentAction = Action.Sitting;
         actionTimer = GetRandomDelay();
         targetPosition = deskPosition.position;
@@ -35,7 +45,6 @@ public class BossAI : MonoBehaviour
 
     private void Update()
     {
-        // Handle each action step
         actionTimer -= Time.deltaTime;
 
         if (actionTimer <= 0f)
@@ -55,7 +64,10 @@ public class BossAI : MonoBehaviour
                     break;
 
                 case Action.Looking:
-                    StartWalkingBackToDesk();
+                    if (!keyChallengeManager.IsChallengeActive()) 
+                    {
+                        keyChallengeManager.StartKeyChallenge();
+                    }
                     break;
 
                 case Action.WalkingBackToDesk:
@@ -75,11 +87,16 @@ public class BossAI : MonoBehaviour
     private void StartWalkingToWaypoint()
     {
         currentAction = Action.WalkingToWaypoint;
+<<<<<<< Updated upstream
         actionTimer = 0f; // No delay when starting to walk
         int index = GetRandomIndex();
         targetPosition = waypoint[index].position;
+=======
+        actionTimer = 0f;
+        targetPosition = waypoint.position;
+>>>>>>> Stashed changes
         isMoving = true;
-        LookTowards(targetPosition);  // Look at the waypoint
+        LookTowards(targetPosition);
         ChangeAnimation();
     }
 
@@ -93,19 +110,32 @@ public class BossAI : MonoBehaviour
             {
                 isMoving = false;
                 currentAction = Action.Looking;
-                actionTimer = GetRandomDelay();
+                actionTimer = 0f; // No delay
                 ChangeAnimation();
             }
         }
     }
 
+    
+
+    public void KeyChallengeSuccess()
+    {
+        StartWalkingBackToDesk();
+    }
+
+    public void KeyChallengeFail()
+    {
+        Debug.Log("Player failed the challenge!");
+        // Here you can add failure consequences if needed
+    }
+
     private void StartWalkingBackToDesk()
     {
         currentAction = Action.WalkingBackToDesk;
-        actionTimer = 0f; // No delay when walking back to the desk
+        actionTimer = 0f;
         targetPosition = deskPosition.position;
         isMoving = true;
-        LookTowards(targetPosition);  // Look at the desk
+        LookTowards(targetPosition);
         ChangeAnimation();
     }
 
@@ -128,7 +158,7 @@ public class BossAI : MonoBehaviour
     private void LookTowards(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
-        transform.forward = new Vector3(direction.x, 0, direction.z);  // Make boss look at target
+        transform.forward = new Vector3(direction.x, 0, direction.z);
     }
 
     private void ChangeAnimation()
@@ -153,7 +183,6 @@ public class BossAI : MonoBehaviour
         }
     }
 
-    // Generates a random delay between minStateDelay and maxStateDelay
     private float GetRandomDelay()
     {
         return Random.Range(minLookingDelay, maxLookingDelay);

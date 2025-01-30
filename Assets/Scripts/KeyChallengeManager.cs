@@ -1,23 +1,44 @@
+﻿using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class KeyChallengeManager : MonoBehaviour
 {
     public GameObject keyPopupPrefab;
     public Transform canvasTransform;
-    public TextMeshProUGUI resultText;
     private bool challengeActive = false;
     private string currentKey = "";
+
+    
+
+
+    public static event Action<bool, bool> OnAltTab;
+
     private GameObject currentKeyPopup;
 
     private Vector2 randomPosition;
     public TimeManager timeManager;
+    private int correctPresses = 0;
+    [SerializeField] private BossAI bossAI;
+    [SerializeField] private GameObject vol;
 
-    private void Start()
-    {
-        StartKeyChallenge();
-    }
+    [SerializeField] private GameObject e;
+    [SerializeField] private GameObject l;
+     public GameLogic g;
+
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource audioSource2;
+    [SerializeField] private AudioSource audioSource3;
+    [SerializeField] private AudioSource audioSource4;
+    [SerializeField] private AudioClip keyPressSound;
+
+    [SerializeField] private GameObject Fail;
+    //private void Start()
+    //{
+    //    StartKeyChallenge();
+    //}
 
     private void Update()
     {
@@ -27,28 +48,70 @@ public class KeyChallengeManager : MonoBehaviour
         }
     }
 
-    private void StartKeyChallenge()
+    public void StartKeyChallenge()
     {
+        
         challengeActive = true;
+        correctPresses = 0;
         currentKey = GenerateRandomKey();
         randomPosition = GenerateRandomPosition();
         DisplayKeyPopup(currentKey, randomPosition);
         timeManager.DoSlowmotion();
+        vol.SetActive(true);
+        e.SetActive(true);
+        l.SetActive(false);
+        audioSource2.pitch = 0.5f;
+        audioSource3.pitch = 0.5f;
     }
 
+
+    
     private void CheckKeyPress()
     {
         if (Input.GetKeyDown(currentKey.ToLower()))
         {
+            audioSource.PlayOneShot(keyPressSound);
             currentKey = GenerateRandomKey();
             randomPosition = GenerateRandomPosition();
 
             DestroyOldKeyPopup();
             DisplayKeyPopup(currentKey, randomPosition);
+            correctPresses++;
+            if (correctPresses == 3)
+            {
+                DestroyOldKeyPopup();
+                vol.SetActive(false);
+                timeManager.ResetTime();
+                EndKeyChallenge();
+                bossAI.KeyChallengeSuccess();
+                e.SetActive(false);
+                l.SetActive(true);
+                correctPresses = 0;
+                audioSource2.pitch = 1f;
+                audioSource3.pitch = 1f;
+            }
+
         }
         else
         {
-            EndKeyChallenge(false);
+            DestroyOldKeyPopup();
+            audioSource2.Pause();
+            audioSource3.Pause();
+            audioSource4.Pause();
+            EndKeyChallenge();
+            e.SetActive(false);
+            l.SetActive(true);
+            vol.SetActive(false);
+            audioSource2.pitch = 1f;
+            audioSource3.pitch = 1f;
+            timeManager.ResetTime();
+            bossAI.KeyChallengeFail();
+            Fail.SetActive(true);
+            Time.timeScale = 0f;
+
+
+
+
         }
     }
 
@@ -109,12 +172,11 @@ public class KeyChallengeManager : MonoBehaviour
     }
 
 
-    private void EndKeyChallenge(bool success)
+    private void EndKeyChallenge()
     {
         challengeActive = false;
 
-        resultText.text = success ? "Success!" : "Failed!";
-        resultText.gameObject.SetActive(true);
+        
 
         // Destroy key pop-ups (clear the canvas)
         //foreach (Transform child in canvasTransform)
@@ -123,15 +185,16 @@ public class KeyChallengeManager : MonoBehaviour
         //}
 
         // Reset time after a short delay
-        Invoke(nameof(ClearResult), 1f);
-
+        vol.SetActive(false);
         timeManager.ResetTime();
+
     }
 
-    private void ClearResult()
+    public bool IsChallengeActive()
     {
-        resultText.gameObject.SetActive(false);
+        return challengeActive;
     }
+
 
     private IEnumerator FadeIn(CanvasGroup canvasGroup)
     {
@@ -142,18 +205,20 @@ public class KeyChallengeManager : MonoBehaviour
         {
             if (canvasGroup == null || canvasGroup.gameObject == null)
             {
-                yield break; 
+                yield break;
             }
 
             canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime; // ✅ Use unscaled time
             yield return null;
         }
 
+
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 1; 
+            canvasGroup.alpha = 1;
         }
     }
+
 
 }

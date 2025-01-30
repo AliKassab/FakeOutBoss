@@ -14,7 +14,7 @@ public class AltTab : MonoBehaviour
             ToggleWindows();
     }
 
-    private void ToggleWindows()
+    public void ToggleWindows()
     {
         ToggleVisibility(Excel);
         ToggleVisibility(League);
