@@ -5,7 +5,6 @@ public class BossAI : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
-<<<<<<< Updated upstream
     [SerializeField] private List<Transform> waypoint;  // Single waypoint
     [SerializeField] private float walkSpeed = 1f;
 
@@ -14,21 +13,10 @@ public class BossAI : MonoBehaviour
 
     [SerializeField] private float minStandDelay = 1f; // Minimum delay
     [SerializeField] private float maxStandDelay = 3f; // Maximum delay
-
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
     public Action currentAction;
-=======
-    [SerializeField] private Transform waypoint;
-    [SerializeField] private float walkSpeed = 1f;
-
-    [SerializeField] private float minStateDelay = 1f;
-    [SerializeField] private float maxStateDelay = 3f;
 
     [SerializeField] private KeyChallengeManager keyChallengeManager; // Reference to KeyChallengeManager
->>>>>>> Stashed changes
-
-    public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
-    public Action currentAction;
 
     private bool isMoving = false;
     private float actionTimer = 0f;
@@ -87,14 +75,9 @@ public class BossAI : MonoBehaviour
     private void StartWalkingToWaypoint()
     {
         currentAction = Action.WalkingToWaypoint;
-<<<<<<< Updated upstream
         actionTimer = 0f; // No delay when starting to walk
         int index = GetRandomIndex();
         targetPosition = waypoint[index].position;
-=======
-        actionTimer = 0f;
-        targetPosition = waypoint.position;
->>>>>>> Stashed changes
         isMoving = true;
         LookTowards(targetPosition);
         ChangeAnimation();

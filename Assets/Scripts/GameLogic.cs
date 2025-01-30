@@ -39,21 +39,7 @@ public class GameLogic : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-<<<<<<< Updated upstream
     void DoAltTab(bool excel, bool league)
-=======
-    private void EndGlance()
-    {
-        isGlancing = false;
-    }
-
-    private bool IsPlayingAnimation(string animationName)
-    {
-        return bossAnimator.GetCurrentAnimatorStateInfo(0).IsName(animationName);
-    }
-
-    public void DoAltTab(bool excel, bool league)
->>>>>>> Stashed changes
     {
         Excel = excel;
         League = league;
