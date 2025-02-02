@@ -1,28 +1,25 @@
 using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ChangeSceneOnSpace : MonoBehaviour
 {
-    [SerializeField] Camera menuCamera;
-    [SerializeField] Camera playerCamera;
-    [SerializeField] GameObject canvas;
-    [SerializeField] GameObject canvas2;
-    [SerializeField] GameObject timer;
+    [SerializeField] Button playButton;
+    [SerializeField] AudioSource clickAudio;
 
-    //[SerializeField] private KeyChallengeManager keyChallengeManager;
-
-    void Update()
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            playerCamera = Camera.main;
-            menuCamera.enabled = false;
-            canvas.SetActive(false);
-            canvas2.SetActive(true);
-            timer.SetActive(true);
-            //keyChallengeManager.StartKeyChallenge();
-
-        }
+        playButton.onClick.AddListener(PlayGame);
+    }
+    private void OnDisable()
+    {
+        playButton.onClick.RemoveAllListeners();
+    }
+    public void PlayGame()
+    {
+        clickAudio.Play(); 
+        SceneManager.LoadSceneAsync(1); 
     }
 }
