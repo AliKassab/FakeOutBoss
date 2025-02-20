@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossAI : MonoBehaviour
+public class AiBrain : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
@@ -16,7 +16,9 @@ public class BossAI : MonoBehaviour
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
     public Action currentAction;
 
-    [SerializeField] private KeyChallengeManager keyChallengeManager; // Reference to KeyChallengeManager
+    [SerializeField] private KeyChallengeManager keyChallengeManager;
+
+    private int waypointIndex = 0;
 
     private bool isMoving = false;
     private float actionTimer = 0f;
@@ -26,9 +28,9 @@ public class BossAI : MonoBehaviour
     {
         Random.InitState(System.Environment.TickCount);
         currentAction = Action.Sitting;
+        ChangeAnimation();
         actionTimer = GetRandomDelay();
         targetPosition = deskPosition.position;
-        ChangeAnimation();
     }
 
     private void Update()
@@ -48,7 +50,7 @@ public class BossAI : MonoBehaviour
                     break;
 
                 case Action.WalkingToWaypoint:
-                    MoveToWaypoint();
+                    MoveToWaypoint(waypointIndex);
                     break;
 
                 case Action.Looking:
@@ -76,47 +78,39 @@ public class BossAI : MonoBehaviour
     {
         currentAction = Action.WalkingToWaypoint;
         actionTimer = 0f; // No delay when starting to walk
-        int index = GetRandomIndex();
-        targetPosition = waypoint[index].position;
+        waypointIndex = GetRandomIndex();
         isMoving = true;
-        LookTowards(targetPosition);
+        LookTowards(waypoint[waypointIndex].position);
         ChangeAnimation();
     }
 
-    private void MoveToWaypoint()
+    private void MoveToWaypoint(int index)
     {
-        if (isMoving)
+        if (!isMoving) return;
+        transform.position = Vector3.MoveTowards(transform.position, waypoint[waypointIndex].position, walkSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, waypoint[index].position) > 0.1f) return;
+        if (waypoint[waypointIndex].name == "PlayerWaypoint")
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
-
-            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
-            {
-                isMoving = false;
-                currentAction = Action.Looking;
-                actionTimer = 0f; // No delay
-                ChangeAnimation();
-            }
+            isMoving = false;
+            currentAction = Action.Looking;
+            actionTimer = 0f; // No delay
+            ChangeAnimation();
         }
+        else
+            StartWalkingBackToDesk();
     }
-
-    
 
     public void KeyChallengeSuccess()
     {
         StartWalkingBackToDesk();
     }
 
-    public void KeyChallengeFail()
-    {
-        Debug.Log("Player failed the challenge!");
-        // Here you can add failure consequences if needed
-    }
-
     private void StartWalkingBackToDesk()
     {
         currentAction = Action.WalkingBackToDesk;
         actionTimer = 0f;
-        targetPosition = deskPosition.position;
+        targetPosition = deskPosition.position + new Vector3(0.1f, 0, 0.1f);
         isMoving = true;
         LookTowards(targetPosition);
         ChangeAnimation();

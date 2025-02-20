@@ -6,39 +6,23 @@ using Random = UnityEngine.Random;
 
 public class KeyChallengeManager : MonoBehaviour
 {
-    public GameObject keyPopupPrefab;
-    public Transform canvasTransform;
+    public GameObject KeyPopUp;
+    public Transform KeyCanvas;
+    public TimeScaleManager TimeScaleManager;
+    public GameManager GameManager;
+    [SerializeField] private AiBrain aiBrain;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private GameObject globalVolume;
+    [SerializeField] private AudioSource keyPressSound;
+    [SerializeField] private GameObject Fail;
+
     private bool challengeActive = false;
     private string currentKey = "";
-
-    
-
-
     public static event Action<bool, bool> OnAltTab;
-
     private GameObject currentKeyPopup;
-
     private Vector2 randomPosition;
-    public TimeManager timeManager;
     private int correctPresses = 0;
-    [SerializeField] private BossAI bossAI;
-    [SerializeField] private GameObject vol;
 
-    [SerializeField] private GameObject e;
-    [SerializeField] private GameObject l;
-     public GameLogic g;
-
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioSource audioSource2;
-    [SerializeField] private AudioSource audioSource3;
-    [SerializeField] private AudioSource audioSource4;
-    [SerializeField] private AudioClip keyPressSound;
-
-    [SerializeField] private GameObject Fail;
-    //private void Start()
-    //{
-    //    StartKeyChallenge();
-    //}
 
     private void Update()
     {
@@ -50,72 +34,45 @@ public class KeyChallengeManager : MonoBehaviour
 
     public void StartKeyChallenge()
     {
-        
         challengeActive = true;
         correctPresses = 0;
-        currentKey = GenerateRandomKey();
+        currentKey = GetRandomKey();
         randomPosition = GenerateRandomPosition();
-        DisplayKeyPopup(currentKey, randomPosition);
-        timeManager.DoSlowmotion();
-        vol.SetActive(true);
-        e.SetActive(true);
-        l.SetActive(false);
-        audioSource2.pitch = 0.5f;
-        audioSource3.pitch = 0.5f;
+        DisplayKey(currentKey, randomPosition);
+        TimeScaleManager.DoSlowmotion();
+        globalVolume.SetActive(true);
     }
 
-
-    
     private void CheckKeyPress()
     {
         if (Input.GetKeyDown(currentKey.ToLower()))
         {
-            audioSource.PlayOneShot(keyPressSound);
-            currentKey = GenerateRandomKey();
+            keyPressSound.Play();
+            currentKey = GetRandomKey();
             randomPosition = GenerateRandomPosition();
-
-            DestroyOldKeyPopup();
-            DisplayKeyPopup(currentKey, randomPosition);
+            DestroyExistingKey();
+            DisplayKey(currentKey, randomPosition);
             correctPresses++;
             if (correctPresses == 3)
             {
-                DestroyOldKeyPopup();
-                vol.SetActive(false);
-                timeManager.ResetTime();
+                DestroyExistingKey();
+                globalVolume.SetActive(false);
+                TimeScaleManager.ResetTime();
                 EndKeyChallenge();
-                bossAI.KeyChallengeSuccess();
-                e.SetActive(false);
-                l.SetActive(true);
+                aiBrain.KeyChallengeSuccess();
                 correctPresses = 0;
-                audioSource2.pitch = 1f;
-                audioSource3.pitch = 1f;
             }
-
         }
         else
         {
-            DestroyOldKeyPopup();
-            audioSource2.Pause();
-            audioSource3.Pause();
-            audioSource4.Pause();
+            DestroyExistingKey();
             EndKeyChallenge();
-            e.SetActive(false);
-            l.SetActive(true);
-            vol.SetActive(false);
-            audioSource2.pitch = 1f;
-            audioSource3.pitch = 1f;
-            timeManager.ResetTime();
-            bossAI.KeyChallengeFail();
-            Fail.SetActive(true);
-            Time.timeScale = 0f;
-
-
-
-
+            globalVolume.SetActive(false);
+            TimeScaleManager.ResetTime();
         }
     }
 
-    private string GenerateRandomKey()
+    private string GetRandomKey()
     {
         string keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return keys[Random.Range(0, keys.Length)].ToString(); 
@@ -123,11 +80,11 @@ public class KeyChallengeManager : MonoBehaviour
 
     private Vector2 GenerateRandomPosition()
     {
-        RectTransform canvasRect = canvasTransform.GetComponent<RectTransform>();
+        RectTransform canvasRect = KeyCanvas.GetComponent<RectTransform>();
         float canvasWidth = canvasRect.rect.width;
         float canvasHeight = canvasRect.rect.height;
 
-        Vector2 letterSize = keyPopupPrefab.GetComponent<RectTransform>().sizeDelta;
+        Vector2 letterSize = KeyPopUp.GetComponent<RectTransform>().sizeDelta;
 
         float xMin = -canvasWidth / 2 + letterSize.x / 2;
         float xMax = canvasWidth / 2 - letterSize.x / 2;
@@ -140,9 +97,9 @@ public class KeyChallengeManager : MonoBehaviour
         return new Vector2(xPos, yPos);
     }
 
-    private void DisplayKeyPopup(string key, Vector2 position)
+    private void DisplayKey(string key, Vector2 position)
     {
-        currentKeyPopup = Instantiate(keyPopupPrefab, canvasTransform);
+        currentKeyPopup = Instantiate(KeyPopUp, KeyCanvas);
 
         TextMeshProUGUI keyText = currentKeyPopup.GetComponentInChildren<TextMeshProUGUI>();
         if (keyText != null)
@@ -158,10 +115,10 @@ public class KeyChallengeManager : MonoBehaviour
         rectTransform.anchoredPosition = position;
 
         CanvasGroup canvasGroup = currentKeyPopup.AddComponent<CanvasGroup>();
-        StartCoroutine(FadeIn(canvasGroup));
+        StartCoroutine(FadeCanvasIn(canvasGroup));
     }
 
-    private void DestroyOldKeyPopup()
+    private void DestroyExistingKey()
     {
         if (currentKeyPopup != null)
         {
@@ -171,32 +128,16 @@ public class KeyChallengeManager : MonoBehaviour
         }
     }
 
-
     private void EndKeyChallenge()
     {
         challengeActive = false;
-
-        
-
-        // Destroy key pop-ups (clear the canvas)
-        //foreach (Transform child in canvasTransform)
-        //{
-        //    Destroy(child.gameObject);
-        //}
-
-        // Reset time after a short delay
-        vol.SetActive(false);
-        timeManager.ResetTime();
-
+        globalVolume.SetActive(false);
+        TimeScaleManager.ResetTime();
     }
 
-    public bool IsChallengeActive()
-    {
-        return challengeActive;
-    }
+    public bool IsChallengeActive() => challengeActive;
 
-
-    private IEnumerator FadeIn(CanvasGroup canvasGroup)
+    private IEnumerator FadeCanvasIn(CanvasGroup canvasGroup)
     {
         float duration = 0.5f;
         float elapsedTime = 0f;
@@ -219,6 +160,4 @@ public class KeyChallengeManager : MonoBehaviour
             canvasGroup.alpha = 1;
         }
     }
-
-
 }

@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class TimeManager : MonoBehaviour
+public class TimeScaleManager : MonoBehaviour
 {
-    public float slowdownFactor = 0.05f;
-    public float slowdownLength = 2f;
+    public float SlowDownFactor = 0.05f;
+    public float SlowDownTime = 2f;
 
     public void DoSlowmotion()
     {
-        Time.timeScale = slowdownFactor;
+        Time.timeScale = SlowDownFactor;
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 

@@ -3,14 +3,13 @@ using UnityEngine;
 public class CubeFall : MonoBehaviour
 {
     private Rigidbody rb;
-    public TimeManager timeManager;
+    public TimeScaleManager timeManager;
 
     private bool isFalling = false;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        
+        rb = GetComponent<Rigidbody>();   
     }
 
     private void Update()

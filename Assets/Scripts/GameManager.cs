@@ -1,29 +1,25 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameLogic : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Transform player;
-    [SerializeField] private Animator bossAnimator;
-    [SerializeField] private string glanceAnimationName = "Glance";
-
-    private bool isPlayerCaught = false;
+    [SerializeField] private Animator aiBrainAnimator;
 
     public bool League = true;
     public bool Excel = false;
 
     private void OnEnable()
     {
-        AltTab.OnAltTab += DoAltTab;
+        PlayerController.OnAltTab += SwitchScreen;
     }
     private void OnDisable()
     {
-        AltTab.OnAltTab -= DoAltTab;
+        PlayerController.OnAltTab -= SwitchScreen;
     }
 
     private void Update()
     {
-        bool isLooking = (bossAnimator.gameObject.GetComponent<BossAI>().currentAction == BossAI.Action.Looking);
+        bool isLooking = (aiBrainAnimator.gameObject.GetComponent<AiBrain>().currentAction == AiBrain.Action.Looking);
         if (isLooking)
             CheckForGame();
     }
@@ -39,7 +35,7 @@ public class GameLogic : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    void DoAltTab(bool excel, bool league)
+    void SwitchScreen(bool excel, bool league)
     {
         Excel = excel;
         League = league;

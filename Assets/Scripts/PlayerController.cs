@@ -1,16 +1,21 @@
 using System;
 using UnityEngine;
 
-public class AltTab : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public SpriteRenderer Excel;
     public SpriteRenderer League;
 
     public static event Action<bool,bool> OnAltTab;
 
+    private void Start()
+    {
+        GetComponent<Animator>().Play("Typing");
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.Space))
             ToggleWindows();
     }
 

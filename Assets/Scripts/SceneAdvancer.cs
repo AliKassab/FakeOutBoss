@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ChangeSceneOnSpace : MonoBehaviour
+public class SceneAdvancer : MonoBehaviour
 {
     [SerializeField] Button playButton;
     [SerializeField] AudioSource clickAudio;
