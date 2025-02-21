@@ -23794,7 +23794,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 476194038}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 866579420}
+        m_TargetAssemblyTypeName: SceneAdvancer, Assembly-CSharp
+        m_MethodName: GoBackToMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &476194038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42878,13 +42890,14 @@ GameObject:
   - component: {fileID: 866579416}
   - component: {fileID: 866579418}
   - component: {fileID: 866579419}
+  - component: {fileID: 866579420}
   m_Layer: 5
   m_Name: lose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &866579416
 RectTransform:
   m_ObjectHideFlags: 0
@@ -42944,6 +42957,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &866579420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866579415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3393a287acfe3a49a9d068a183b0b48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playButton: {fileID: 0}
+  clickAudio: {fileID: 1479426125}
+  quitButton: {fileID: 0}
 --- !u!4 &867365617 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4837329652793204, guid: 88498815dea432045b6eaa9875ec268a, type: 3}
@@ -70378,6 +70406,7 @@ MonoBehaviour:
   deskPosition: {fileID: 809133742}
   waypoint:
   - {fileID: 754153100}
+  - {fileID: 782491886}
   walkSpeed: 0.5
   minLookingDelay: 1
   maxLookingDelay: 3

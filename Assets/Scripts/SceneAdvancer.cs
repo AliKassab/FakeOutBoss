@@ -1,25 +1,37 @@
 using Unity.VisualScripting;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SceneAdvancer : MonoBehaviour
 {
-    [SerializeField] Button playButton;
-    [SerializeField] AudioSource clickAudio;
+    [SerializeField] Button? playButton;
+    [SerializeField] AudioSource? clickAudio;
+    [SerializeField] Button? quitButton;
 
     private void OnEnable()
     {
-        playButton.onClick.AddListener(PlayGame);
+        playButton?.onClick.AddListener(PlayGame);
+        quitButton?.onClick.AddListener(Quit);
     }
     private void OnDisable()
     {
-        playButton.onClick.RemoveAllListeners();
+        playButton?.onClick.RemoveAllListeners();
+        quitButton?.onClick.RemoveAllListeners();
     }
     public void PlayGame()
     {
-        clickAudio.Play(); 
+        clickAudio?.Play(); 
         SceneManager.LoadSceneAsync(1); 
+    }
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void GoBackToMenu()
+    {
+        clickAudio?.Play();
+        SceneManager.LoadSceneAsync(0);
     }
 }
