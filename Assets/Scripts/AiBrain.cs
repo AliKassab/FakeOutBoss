@@ -13,6 +13,7 @@ public class AiBrain : MonoBehaviour
 
     [SerializeField] private float minStandDelay = 1f; // Minimum delay
     [SerializeField] private float maxStandDelay = 3f; // Maximum delay
+
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
     public Action currentAction;
 
@@ -55,9 +56,7 @@ public class AiBrain : MonoBehaviour
 
                 case Action.Looking:
                     if (!keyChallengeManager.IsChallengeActive()) 
-                    {
-                        keyChallengeManager.StartKeyChallenge();
-                    }
+                        keyChallengeManager.CheckForScreen();
                     break;
 
                 case Action.WalkingBackToDesk:
@@ -152,7 +151,7 @@ public class AiBrain : MonoBehaviour
                 animator.Play("Walking");
                 break;
             case Action.Looking:
-                animator.Play("Look");
+                animator.Play("Looking");
                 break;
             case Action.WalkingBackToDesk:
                 animator.Play("Walking");

@@ -7,9 +7,9 @@ using Random = UnityEngine.Random;
 public class KeyChallengeManager : MonoBehaviour
 {
     public GameObject KeyPopUp;
-    public Transform KeyCanvas;
+    public RectTransform KeyCanvas;
     public TimeScaleManager TimeScaleManager;
-    public GameManager GameManager;
+    public GameManager gameManager;
     [SerializeField] private AiBrain aiBrain;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private GameObject globalVolume;
@@ -18,22 +18,31 @@ public class KeyChallengeManager : MonoBehaviour
 
     private bool challengeActive = false;
     private string currentKey = "";
-    public static event Action<bool, bool> OnAltTab;
     private GameObject currentKeyPopup;
     private Vector2 randomPosition;
     private int correctPresses = 0;
 
+    private void Start()
+    {
+        Fail.SetActive(false);
+    }
 
     private void Update()
     {
         if (challengeActive && Input.anyKeyDown)
-        {
             CheckKeyPress();
-        }
+    }
+
+    public void CheckForScreen()
+    {
+        if (gameManager.League)
+            StartKeyChallenge();
+        else
+            aiBrain.KeyChallengeSuccess();
     }
 
     public void StartKeyChallenge()
-    {
+    {   
         challengeActive = true;
         correctPresses = 0;
         currentKey = GetRandomKey();
@@ -53,12 +62,11 @@ public class KeyChallengeManager : MonoBehaviour
             DestroyExistingKey();
             DisplayKey(currentKey, randomPosition);
             correctPresses++;
-            if (correctPresses == 3)
+            if (correctPresses >= 3)
             {
                 DestroyExistingKey();
-                globalVolume.SetActive(false);
-                TimeScaleManager.ResetTime();
                 EndKeyChallenge();
+                playerController.ToggleWindows();
                 aiBrain.KeyChallengeSuccess();
                 correctPresses = 0;
             }
@@ -67,14 +75,18 @@ public class KeyChallengeManager : MonoBehaviour
         {
             DestroyExistingKey();
             EndKeyChallenge();
-            globalVolume.SetActive(false);
-            TimeScaleManager.ResetTime();
+            FailChallenge();
         }
     }
 
+    private void FailChallenge()
+    {
+        Fail.SetActive(true);
+        Time.timeScale = 0f;
+    }
     private string GetRandomKey()
     {
-        string keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        string keys = "abcdefghijklmnopqrstuvwxyz";
         return keys[Random.Range(0, keys.Length)].ToString(); 
     }
 
@@ -103,13 +115,9 @@ public class KeyChallengeManager : MonoBehaviour
 
         TextMeshProUGUI keyText = currentKeyPopup.GetComponentInChildren<TextMeshProUGUI>();
         if (keyText != null)
-        {
             keyText.text = key;
-        }
         else
-        {
             Debug.LogWarning("TextMeshProUGUI component missing in key popup prefab!");
-        }
 
         RectTransform rectTransform = currentKeyPopup.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = position;

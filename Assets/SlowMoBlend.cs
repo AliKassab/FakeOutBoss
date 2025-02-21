@@ -4,7 +4,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class SlowMoBlend : MonoBehaviour
 {
-    public float transitionSpeed = 2f;
+    public float transitionSpeed = 0.5f;
 
     private float targetWeight = 0f;
 
