@@ -9,18 +9,17 @@ public class KeyChallengeManager : MonoBehaviour
     public GameObject KeyPopUp;
     public RectTransform KeyCanvas;
     public TimeScaleManager TimeScaleManager;
-    public GameManager gameManager;
-    [SerializeField] private AiBrain aiBrain;
+
     [SerializeField] private PlayerController playerController;
     [SerializeField] private GameObject globalVolume;
     [SerializeField] private AudioSource keyPressSound;
     [SerializeField] private GameObject Fail;
 
-    private bool challengeActive = false;
     private string currentKey = "";
     private GameObject currentKeyPopup;
     private Vector2 randomPosition;
     private int correctPresses = 0;
+    private bool isChallengeActive = false;
 
     private void Start()
     {
@@ -29,21 +28,23 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void Update()
     {
-        if (challengeActive && Input.anyKeyDown)
-            CheckKeyPress();
-    }
-
-    public void CheckForScreen()
-    {
-        if (gameManager.League)
-            StartKeyChallenge();
-        else
-            aiBrain.KeyChallengeSuccess();
+        if (GameData.Instance.IsPlaying && GameData.Instance.IsAILooking && GameData.Instance.IsAlmostSpotted)
+        {
+            if (!isChallengeActive)
+            {
+                StartKeyChallenge();
+                return;
+            }
+            
+            if (Input.anyKeyDown)
+                CheckKeyPress();
+        }
     }
 
     public void StartKeyChallenge()
     {   
-        challengeActive = true;
+        GameData.Instance.IsAlmostSpotted = true;
+        isChallengeActive = true;
         correctPresses = 0;
         currentKey = GetRandomKey();
         randomPosition = GenerateRandomPosition();
@@ -51,6 +52,8 @@ public class KeyChallengeManager : MonoBehaviour
         TimeScaleManager.DoSlowmotion();
         globalVolume.SetActive(true);
     }
+
+
 
     private void CheckKeyPress()
     {
@@ -67,7 +70,6 @@ public class KeyChallengeManager : MonoBehaviour
                 DestroyExistingKey();
                 EndKeyChallenge();
                 playerController.ToggleWindows();
-                aiBrain.KeyChallengeSuccess();
                 correctPresses = 0;
             }
         }
@@ -138,12 +140,12 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void EndKeyChallenge()
     {
-        challengeActive = false;
+        GameData.Instance.IsAlmostSpotted = false;
+        GameData.Instance.IsAILooking = false;
+        isChallengeActive = false;
         globalVolume.SetActive(false);
         TimeScaleManager.ResetTime();
     }
-
-    public bool IsChallengeActive() => challengeActive;
 
     private IEnumerator FadeCanvasIn(CanvasGroup canvasGroup)
     {
@@ -158,7 +160,7 @@ public class KeyChallengeManager : MonoBehaviour
             }
 
             canvasGroup.alpha = Mathf.Lerp(0, 1, elapsedTime / duration);
-            elapsedTime += Time.unscaledDeltaTime; // ✅ Use unscaled time
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
 

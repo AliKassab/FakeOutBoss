@@ -5,7 +5,7 @@ public class AiBrain : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform deskPosition;
-    [SerializeField] private List<Transform> waypoint;  // Single waypoint
+    [SerializeField] private List<Transform> waypoint;
     [SerializeField] private float walkSpeed = 1f;
 
     [SerializeField] private float minLookingDelay = 1f; // Minimum delay
@@ -15,15 +15,15 @@ public class AiBrain : MonoBehaviour
     [SerializeField] private float maxStandDelay = 3f; // Maximum delay
 
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
-    public Action currentAction;
-
-    [SerializeField] private KeyChallengeManager keyChallengeManager;
-
+    #region Private Members
+    private Action currentAction;
     private int waypointIndex = 0;
-
     private bool isMoving = false;
     private float actionTimer = 0f;
     private Vector3 targetPosition;
+    #endregion
+
+
 
     private void Start()
     {
@@ -55,8 +55,10 @@ public class AiBrain : MonoBehaviour
                     break;
 
                 case Action.Looking:
-                    if (!keyChallengeManager.IsChallengeActive()) 
-                        keyChallengeManager.CheckForScreen();
+                    if (!GameData.Instance.IsAlmostSpotted)
+                        GameData.Instance.IsAILooking = true;
+                    if (!GameData.Instance.IsPlaying)
+                        StartWalkingBackToDesk();
                     break;
 
                 case Action.WalkingBackToDesk:

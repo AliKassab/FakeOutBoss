@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public SpriteRenderer Excel;
-    public SpriteRenderer League;
-
-    public static event Action<bool,bool> OnAltTab;
+    [SerializeField] private SpriteRenderer excelScreenSpr;
+    [SerializeField] private SpriteRenderer leagueScreenSpr;
 
     private void Start()
     {
         GetComponent<Animator>().Play("Typing");
+        UpdateGameData();
     }
 
     private void Update()
@@ -21,14 +20,16 @@ public class PlayerController : MonoBehaviour
 
     public void ToggleWindows()
     {
-        ToggleVisibility(Excel);
-        ToggleVisibility(League);
-        OnAltTab.Invoke(Excel.enabled, League.enabled);
+        ToggleVisibility(excelScreenSpr);
+        ToggleVisibility(leagueScreenSpr);
+        UpdateGameData();
     }
+
+    private void UpdateGameData() => GameData.Instance.IsPlaying = leagueScreenSpr.enabled;
 
     private void ToggleVisibility(SpriteRenderer spriteRenderer)
     {
-        if (spriteRenderer != null)
-            spriteRenderer.enabled = !spriteRenderer.enabled;
+        if (spriteRenderer == null) return;
+        spriteRenderer.enabled = !spriteRenderer.enabled;
     }
 }
