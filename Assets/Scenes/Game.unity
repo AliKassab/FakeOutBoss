@@ -66007,7 +66007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1379288557}
-  currentTime: 10
+  currentTime: 480
   WinScreen: {fileID: 1889567731}
 --- !u!4 &1380159143 stripped
 Transform:
