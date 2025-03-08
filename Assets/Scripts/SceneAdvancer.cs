@@ -21,7 +21,8 @@ public class SceneAdvancer : MonoBehaviour
     }
     public void PlayGame()
     {
-        clickAudio?.Play(); 
+        clickAudio?.Play();
+        GameData.Instance.IsGameActive = true;
         SceneManager.LoadSceneAsync(1); 
     }
     public void Quit()
@@ -32,6 +33,8 @@ public class SceneAdvancer : MonoBehaviour
     public void GoBackToMenu()
     {
         clickAudio?.Play();
+        Time.timeScale = 1f;
+        GameData.Instance.IsGameActive = false;
         SceneManager.LoadSceneAsync(0);
     }
 }

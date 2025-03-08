@@ -36,6 +36,7 @@ public class AiBrain : MonoBehaviour
 
     private void Update()
     {
+        if (!GameData.Instance.IsGameActive) return;
         actionTimer -= Time.deltaTime;
 
         if (actionTimer <= 0f)
@@ -55,13 +56,13 @@ public class AiBrain : MonoBehaviour
                     break;
 
                 case Action.Looking:
-                    if (!GameData.Instance.IsAlmostSpotted)
-                        GameData.Instance.IsAILooking = true;
+                    GameData.Instance.IsAILooking = true;
                     if (!GameData.Instance.IsPlaying)
                         StartWalkingBackToDesk();
                     break;
 
                 case Action.WalkingBackToDesk:
+                    GameData.Instance.IsAILooking = false;
                     MoveBackToDesk();
                     break;
             }

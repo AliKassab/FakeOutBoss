@@ -28,7 +28,8 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void Update()
     {
-        if (GameData.Instance.IsPlaying && GameData.Instance.IsAILooking && GameData.Instance.IsAlmostSpotted)
+        if (!GameData.Instance.IsGameActive) return;
+        if (GameData.Instance.IsPlaying && GameData.Instance.IsAILooking)
         {
             if (!isChallengeActive)
             {
@@ -42,13 +43,10 @@ public class KeyChallengeManager : MonoBehaviour
     }
 
     public void StartKeyChallenge()
-    {   
-        GameData.Instance.IsAlmostSpotted = true;
+    {
         isChallengeActive = true;
         correctPresses = 0;
-        currentKey = GetRandomKey();
-        randomPosition = GenerateRandomPosition();
-        DisplayKey(currentKey, randomPosition);
+        SetNewKey();
         TimeScaleManager.DoSlowmotion();
         globalVolume.SetActive(true);
     }
@@ -60,30 +58,32 @@ public class KeyChallengeManager : MonoBehaviour
         if (Input.GetKeyDown(currentKey.ToLower()))
         {
             keyPressSound.Play();
-            currentKey = GetRandomKey();
-            randomPosition = GenerateRandomPosition();
             DestroyExistingKey();
-            DisplayKey(currentKey, randomPosition);
+            SetNewKey();
             correctPresses++;
             if (correctPresses >= 3)
             {
                 DestroyExistingKey();
                 EndKeyChallenge();
                 playerController.ToggleWindows();
-                correctPresses = 0;
             }
         }
         else
         {
-            DestroyExistingKey();
             EndKeyChallenge();
             FailChallenge();
         }
     }
-
+    private void SetNewKey()
+    {
+        currentKey = GetRandomKey();
+        randomPosition = GenerateRandomPosition();
+        DisplayKey(currentKey, randomPosition);
+    }
     private void FailChallenge()
     {
         Fail.SetActive(true);
+        GameData.Instance.IsGameActive = false;
         Time.timeScale = 0f;
     }
     private string GetRandomKey()
@@ -140,9 +140,9 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void EndKeyChallenge()
     {
-        GameData.Instance.IsAlmostSpotted = false;
-        GameData.Instance.IsAILooking = false;
         isChallengeActive = false;
+        GameData.Instance.IsAILooking = false;
+        GameData.Instance.IsPlaying = false;
         globalVolume.SetActive(false);
         TimeScaleManager.ResetTime();
     }

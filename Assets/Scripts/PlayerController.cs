@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!GameData.Instance.IsGameActive) return;
+        if (!GameData.Instance.IsAILooking && Input.GetKeyDown(KeyCode.Space))
             ToggleWindows();
     }
 

@@ -23,12 +23,13 @@ public class GameData : ScriptableObject
 
     private void OnEnable()
     {
-        IsAlmostSpotted = false;
         IsAILooking = false;
+        IsPlaying = true;
+        IsGameActive = false;
     }
 
     public bool IsPlaying = true;
-    public bool IsAlmostSpotted = false;
     public bool IsAILooking = false;
+    public bool IsGameActive = false;
 }
 
