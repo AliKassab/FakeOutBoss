@@ -2,6 +2,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEditor;
 using Random = UnityEngine.Random;
 
 public class KeyChallengeManager : MonoBehaviour
@@ -51,7 +52,12 @@ public class KeyChallengeManager : MonoBehaviour
         globalVolume.SetActive(true);
     }
 
-
+    public void ByPassChallenge()
+    {
+        DestroyExistingKey();
+        EndKeyChallenge();
+        playerController.ToggleWindows();
+    }
 
     private void CheckKeyPress()
     {

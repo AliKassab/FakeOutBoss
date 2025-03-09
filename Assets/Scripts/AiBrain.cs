@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AiBrain : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
+    private Animator animator;
     [SerializeField] private Transform originPosition;
     [SerializeField] private List<WaypointPath> waypointPaths; // Changed to hold paths
     [SerializeField] private float walkSpeed = 1f;
@@ -13,6 +13,8 @@ public class AiBrain : MonoBehaviour
 
     [SerializeField] private float minStandDelay = 1f;
     [SerializeField] private float maxStandDelay = 3f;
+
+    [SerializeField] private Vector3 currentTarget;
 
     public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
     #region Private Members
@@ -26,6 +28,7 @@ public class AiBrain : MonoBehaviour
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
         Random.InitState(System.Environment.TickCount);
         currentAction = Action.Sitting;
         ChangeAnimation();
@@ -105,7 +108,8 @@ public class AiBrain : MonoBehaviour
             return;
         }
 
-        Transform targetWaypoint = currentPath.wayPoints[currentWaypointIndexInPath];
+        Transform targetWaypoint =  currentPath.wayPoints[currentWaypointIndexInPath];
+        currentTarget = targetWaypoint.position;
         transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, walkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) <= 0.1f)
@@ -143,7 +147,8 @@ public class AiBrain : MonoBehaviour
     {
         currentAction = Action.WalkingBackToDesk;
         actionTimer = 0f;
-        targetPosition = originPosition.position + new Vector3(0.1f, 0, 0.1f);
+        targetPosition = currentTarget = originPosition.position + new Vector3(0.1f, 0, 0.1f);
+
         isMoving = true;
         LookTowards(targetPosition);
         ChangeAnimation();
@@ -153,8 +158,7 @@ public class AiBrain : MonoBehaviour
     {
         if (isMoving)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
-
+            transform.position = currentTarget = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
                 isMoving = false;

@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsPlaying: 1
   IsAILooking: 0
-  IsGameActive: 0
+  IsGameActive: 1
