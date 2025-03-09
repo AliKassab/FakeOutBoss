@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AiBrain : MonoBehaviour
 {
-    private Animator animator;
+
     [SerializeField] private Transform originPosition;
     [SerializeField] private List<WaypointPath> waypointPaths; // Changed to hold paths
     [SerializeField] private float walkSpeed = 1f;
@@ -14,25 +16,24 @@ public class AiBrain : MonoBehaviour
     [SerializeField] private float minStandDelay = 1f;
     [SerializeField] private float maxStandDelay = 3f;
 
-    [SerializeField] private Vector3 currentTarget;
+    [SerializeField] private GameObject currentTarget;
 
-    public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToDesk }
+    public enum Action { Sitting, Standing, WalkingToWaypoint, Looking, WalkingBackToOrigin }
     #region Private Members
+    private Animator animator;
     private Action currentAction;
     private bool isMoving = false;
     private float actionTimer = 0f;
     private Vector3 targetPosition;
-    private WaypointPath currentPath; // Track current path
-    private int currentWaypointIndexInPath; // Track current waypoint in path
+    private WaypointPath currentPath;
+    private int currentWaypointIndexInPath;
     #endregion
 
     private void Start()
     {
         animator = GetComponent<Animator>();
         Random.InitState(System.Environment.TickCount);
-        currentAction = Action.Sitting;
-        ChangeAnimation();
-        actionTimer = GetRandomDelay();
+        SetStateSettings(GetRandomDelay(), Action.Sitting);
         targetPosition = originPosition.position;
     }
 
@@ -54,7 +55,7 @@ public class AiBrain : MonoBehaviour
                     break;
 
                 case Action.WalkingToWaypoint:
-                    MoveToWaypoint(); // Updated to handle path
+                    MoveToWaypoint();
                     break;
 
                 case Action.Looking:
@@ -63,7 +64,7 @@ public class AiBrain : MonoBehaviour
                         StartWalkingBackToOrigin();
                     break;
 
-                case Action.WalkingBackToDesk:
+                case Action.WalkingBackToOrigin:
                     GameData.Instance.IsAILooking = false;
                     MoveBackToOrigin();
                     break;
@@ -71,12 +72,8 @@ public class AiBrain : MonoBehaviour
         }
     }
 
-    private void StartStanding()
-    {
-        currentAction = Action.Standing;
-        actionTimer = GetRandomDelayStanding();
-        ChangeAnimation();
-    }
+    private void StartStanding() =>
+        SetStateSettings(GetRandomDelayStanding(), Action.Standing);
 
     private void StartWalkingToWaypoint()
     {
@@ -86,22 +83,18 @@ public class AiBrain : MonoBehaviour
             return;
         }
 
-        currentAction = Action.WalkingToWaypoint;
-        actionTimer = 0f;
-        // Select a random path
         int pathIndex = Random.Range(0, waypointPaths.Count);
         currentPath = waypointPaths[pathIndex];
         currentWaypointIndexInPath = 0;
         isMoving = true;
         LookTowards(currentPath.wayPoints[currentWaypointIndexInPath].position);
-        ChangeAnimation();
+        SetStateSettings(0f, Action.WalkingToWaypoint);
     }
 
     private void MoveToWaypoint()
     {
         if (!isMoving) return;
 
-        // Check if current path is valid
         if (currentPath == null || currentWaypointIndexInPath >= currentPath.wayPoints.Length)
         {
             isMoving = false;
@@ -109,12 +102,11 @@ public class AiBrain : MonoBehaviour
         }
 
         Transform targetWaypoint =  currentPath.wayPoints[currentWaypointIndexInPath];
-        currentTarget = targetWaypoint.position;
+        currentTarget = currentPath.wayPoints[currentWaypointIndexInPath].gameObject;
         transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, walkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetWaypoint.position) <= 0.1f)
         {
-            // Check if there are more waypoints in the path
             if (currentWaypointIndexInPath < currentPath.wayPoints.Length - 1)
             {
                 currentWaypointIndexInPath++;
@@ -122,49 +114,78 @@ public class AiBrain : MonoBehaviour
             }
             else
             {
-                // Reached the end of the path
                 isMoving = false;
                 if (targetWaypoint.name == "PlayerWaypoint")
-                {
-                    currentAction = Action.Looking;
-                    actionTimer = 0f;
-                    ChangeAnimation();
-                }
+                    SetStateSettings(0f, Action.Looking);
                 else
-                {
                     StartWalkingBackToOrigin();
-                }
             }
         }
     }
 
-    public void KeyChallengeSuccess()
-    {
-        StartWalkingBackToOrigin();
-    }
-
     private void StartWalkingBackToOrigin()
     {
-        currentAction = Action.WalkingBackToDesk;
-        actionTimer = 0f;
-        targetPosition = currentTarget = originPosition.position + new Vector3(0.1f, 0, 0.1f);
+        // Start from the last waypoint index and move backward
+        currentWaypointIndexInPath = currentPath.wayPoints.Length - 1;
+        currentWaypointIndexInPath--; // Move to the previous waypoint
+
+        if (currentWaypointIndexInPath >= 0)
+        {
+            currentTarget = currentPath.wayPoints[currentWaypointIndexInPath].gameObject;
+            targetPosition = currentTarget.transform.position;
+            LookTowards(targetPosition);
+        }
+        else
+        {
+            // If no more waypoints, move directly to origin
+            currentTarget = originPosition.gameObject;
+            targetPosition = originPosition.position;
+            LookTowards(targetPosition);
+        }
 
         isMoving = true;
-        LookTowards(targetPosition);
-        ChangeAnimation();
+        SetStateSettings(0f, Action.WalkingBackToOrigin);
     }
 
     private void MoveBackToOrigin()
     {
         if (isMoving)
         {
-            transform.position = currentTarget = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
-            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            if (currentWaypointIndexInPath >= 0)
             {
-                isMoving = false;
-                currentAction = Action.Sitting;
-                actionTimer = GetRandomDelay();
-                ChangeAnimation();
+                // Move towards the current reversed waypoint
+                Transform targetWaypoint = currentPath.wayPoints[currentWaypointIndexInPath];
+                transform.position = Vector3.MoveTowards(transform.position, targetWaypoint.position, walkSpeed * Time.deltaTime);
+
+                if (Vector3.Distance(transform.position, targetWaypoint.position) <= 0.1f)
+                {
+                    currentWaypointIndexInPath--;
+
+                    if (currentWaypointIndexInPath >= 0)
+                    {
+                        currentTarget = currentPath.wayPoints[currentWaypointIndexInPath].gameObject;
+                        targetPosition = currentTarget.transform.position;
+                        LookTowards(targetPosition);
+                    }
+                    else
+                    {
+                        // All reversed waypoints visited, move to origin
+                        currentTarget = originPosition.gameObject;
+                        targetPosition = originPosition.position;
+                        LookTowards(targetPosition);
+                    }
+                }
+            }
+            else
+            {
+                // Move towards the origin position
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, walkSpeed * Time.deltaTime);
+
+                if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+                {
+                    isMoving = false;
+                    SetStateSettings(GetRandomDelay(), Action.Sitting);
+                }
             }
         }
     }
@@ -173,6 +194,13 @@ public class AiBrain : MonoBehaviour
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
         transform.forward = new Vector3(direction.x, 0, direction.z);
+    }
+
+    private void SetStateSettings(float actionDelay, Action currentAction)
+    {
+        this.currentAction = currentAction;
+        actionTimer = actionDelay;
+        ChangeAnimation();
     }
 
     private void ChangeAnimation()
@@ -191,20 +219,15 @@ public class AiBrain : MonoBehaviour
             case Action.Looking:
                 animator.Play("Looking");
                 break;
-            case Action.WalkingBackToDesk:
+            case Action.WalkingBackToOrigin:
                 animator.Play("Walking");
                 break;
         }
     }
 
-    private float GetRandomDelay()
-    {
-        return Random.Range(minLookingDelay, maxLookingDelay);
-    }
+    private float GetRandomDelay() 
+        => Random.Range(minLookingDelay, maxLookingDelay);
 
-    private float GetRandomDelayStanding()
-    {
-        return Random.Range(minStandDelay, maxStandDelay);
-    }
-
+    private float GetRandomDelayStanding() 
+        => Random.Range(minStandDelay, maxStandDelay);
 }

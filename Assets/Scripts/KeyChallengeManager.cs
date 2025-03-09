@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEditor;
 using Random = UnityEngine.Random;
+using UnityEngine.InputSystem.LowLevel;
 
 public class KeyChallengeManager : MonoBehaviour
 {
@@ -61,6 +62,11 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void CheckKeyPress()
     {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2) ||
+        Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Mouse2) ||
+        Input.GetKeyDown(KeyCode.Mouse3) || Input.GetKeyDown(KeyCode.Mouse4))
+            return;
+
         if (Input.GetKeyDown(currentKey.ToLower()))
         {
             keyPressSound.Play();
@@ -94,7 +100,7 @@ public class KeyChallengeManager : MonoBehaviour
     }
     private string GetRandomKey()
     {
-        string keys = "abcdefghijklmnopqrstuvwxyz";
+        string keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return keys[Random.Range(0, keys.Length)].ToString(); 
     }
 
