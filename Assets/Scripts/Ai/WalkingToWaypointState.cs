@@ -30,7 +30,7 @@ public class WalkingToWaypointState : IAiState
         if (currentPath == null) return;
 
         Transform targetWaypoint = currentPath.wayPoints[currentWaypointIndex];
-        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, targetWaypoint.position, aiBrain.WalkSpeed * Time.deltaTime);
+        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, targetWaypoint.position, aiBrain.Data.WalkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(aiBrain.transform.position, targetWaypoint.position) <= 0.1f)
         {

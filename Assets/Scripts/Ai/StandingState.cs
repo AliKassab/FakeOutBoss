@@ -10,7 +10,7 @@ public class StandingState : IAiState
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        timer = Random.Range(aiBrain.MinStandDelay, aiBrain.MaxStandDelay);
+        timer = Random.Range(aiBrain.Data.MinStandDelay, aiBrain.Data.MaxStandDelay);
         aiBrain.ChangeAnimation("Standing");
     }
 

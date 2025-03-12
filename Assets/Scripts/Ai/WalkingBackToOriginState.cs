@@ -32,7 +32,7 @@ public class WalkingBackToOriginState : IAiState
     private void FollowPathBack()
     {
         Transform target = path.wayPoints[currentWaypointIndex];
-        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, target.position, aiBrain.WalkSpeed * Time.deltaTime);
+        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, target.position, aiBrain.Data.WalkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(aiBrain.transform.position, target.position) <= 0.1f)
         {
@@ -43,7 +43,7 @@ public class WalkingBackToOriginState : IAiState
 
     private void ReturnToOrigin()
     {
-        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, aiBrain.OriginPosition.position, aiBrain.WalkSpeed * Time.deltaTime);
+        aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, aiBrain.OriginPosition.position, aiBrain.Data.WalkSpeed * Time.deltaTime);
         if (Vector3.Distance(aiBrain.transform.position, aiBrain.OriginPosition.position) <= 0.1f)
             aiBrain.ChangeState(new SittingState());
     }

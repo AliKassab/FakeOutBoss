@@ -10,7 +10,7 @@ public class LookingState : IAiState
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        this.timer = aiBrain.LookingDuration;
+        this.timer = aiBrain.Data.LookingDuration;
         aiBrain.ChangeAnimation("Looking");
         GameData.Instance.IsAILooking = true;
     }

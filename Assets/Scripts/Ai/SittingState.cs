@@ -6,11 +6,13 @@ public class SittingState : IAiState
 {
     private AiBrain aiBrain;
     private float timer;
-
+    private WeightedRandom weightedRandom = new();
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        timer = Random.Range(aiBrain.MinSittingDelay, aiBrain.MaxSittingDelay);
+        timer = UnityEngine.Random.Range(aiBrain.Data.MinSittingDelay, aiBrain.Data.MaxSittingDelay);
+        weightedRandom.items.Add(new WeightedItem(new StandingState(), aiBrain.Data.StandingStateWeight));
+        weightedRandom.items.Add(new WeightedItem(new SittingAngryState(), aiBrain.Data.AngryStateWeight));
         aiBrain.ChangeAnimation("Sitting");
     }
 
@@ -20,6 +22,6 @@ public class SittingState : IAiState
     {
         timer -= Time.deltaTime;
         if (timer <= 0)
-            aiBrain.ChangeState(new StandingState());
+            aiBrain.ChangeState(weightedRandom.GetRandomState());
     }
 }
