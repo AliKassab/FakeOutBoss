@@ -10,7 +10,7 @@ public class SittingState : IAiState
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        timer = Random.Range(aiBrain.MinLookingDelay, aiBrain.MaxLookingDelay);
+        timer = Random.Range(aiBrain.MinSittingDelay, aiBrain.MaxSittingDelay);
         aiBrain.ChangeAnimation("Sitting");
     }
 

@@ -3,30 +3,18 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class AiBrain : MonoBehaviour
+public partial class AiBrain : MonoBehaviour
 {
     [SerializeField] private Transform originPosition;
     [SerializeField] private List<WaypointPath> waypointPaths;
-    [SerializeField] private float walkSpeed = 1f;
-    [SerializeField] private float minLookingDelay = 1f;
-    [SerializeField] private float maxLookingDelay = 3f;
-    [SerializeField] private float minStandDelay = 1f;
-    [SerializeField] private float maxStandDelay = 3f;
-    [SerializeField] private GameObject currentTarget;
 
     private Animator animator;
     private IAiState currentState;
-    [SerializeField] private string currentStateName;
 
     // Public properties for states to access
     public Transform OriginPosition => originPosition;
     public List<WaypointPath> WaypointPaths => waypointPaths;
-    public float WalkSpeed => walkSpeed;
-    public float MinLookingDelay => minLookingDelay;
-    public float MaxLookingDelay => maxLookingDelay;
-    public float MinStandDelay => minStandDelay;
-    public float MaxStandDelay => maxStandDelay;
-    public GameObject CurrentTarget { get => currentTarget; set => currentTarget = value; }
+    public GameObject CurrentTarget { get; set; }
     public WaypointPath CurrentPath { get; set; }
 
     private void Start()
@@ -46,7 +34,6 @@ public class AiBrain : MonoBehaviour
     {
         currentState?.Exit();
         currentState = newState;
-        currentStateName = currentState.GetType().ToString();
         currentState.Enter(this);
     }
 
@@ -57,4 +44,20 @@ public class AiBrain : MonoBehaviour
     }
 
     public void ChangeAnimation(string animationName) => animator.Play(animationName);
+}
+
+public partial class AiBrain
+{
+    [SerializeField] private float walkSpeed = 1f;
+    [SerializeField] private float lookingDuration = 1f;
+    [SerializeField] private float minStandDelay = 1f;
+    [SerializeField] private float maxStandDelay = 3f;
+    [SerializeField] private float minSittingDelay = 1f;
+    [SerializeField] private float maxSittingDelay = 3f;
+    public float WalkSpeed => walkSpeed;
+    public float LookingDuration => lookingDuration;
+    public float MinStandDelay => minStandDelay;
+    public float MaxStandDelay => maxStandDelay;
+    public float MinSittingDelay => minSittingDelay;
+    public float MaxSittingDelay => maxSittingDelay;
 }

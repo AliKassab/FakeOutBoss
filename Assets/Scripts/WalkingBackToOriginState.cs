@@ -9,9 +9,7 @@ public class WalkingBackToOriginState : IAiState
     private int currentWaypointIndex;
 
     public WalkingBackToOriginState(WaypointPath path)
-    {
-        this.path = path;
-    }
+       => this.path = path;
 
     public void Enter(AiBrain aiBrain)
     {

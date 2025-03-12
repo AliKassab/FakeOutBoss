@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     {
         GetComponent<Animator>().Play("Typing");
         UpdateGameData();
+        GameData.Instance.ResetData();
     }
 
     private void Update()

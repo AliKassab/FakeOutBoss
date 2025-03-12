@@ -41,6 +41,9 @@ public class KeyChallengeManager : MonoBehaviour
             
             if (Input.anyKeyDown)
                 CheckKeyPress();
+
+            if (GameData.Instance.IsSpotted)
+                FailChallenge();
         }
     }
 
@@ -70,24 +73,23 @@ public class KeyChallengeManager : MonoBehaviour
         if (Input.GetKeyDown(currentKey.ToLower()))
         {
             keyPressSound.Play();
-            DestroyExistingKey();
             SetNewKey();
             correctPresses++;
             if (correctPresses >= 3)
-            {
-                DestroyExistingKey();
-                EndKeyChallenge();
-                playerController.ToggleWindows();
-            }
-        }
-        else
-        {
-            EndKeyChallenge();
-            FailChallenge();
+                PassChallenge();
         }
     }
+
+    private void PassChallenge()
+    {
+        DestroyExistingKey();
+        EndKeyChallenge();
+        playerController.ToggleWindows();
+    }
+
     private void SetNewKey()
     {
+        DestroyExistingKey();
         currentKey = GetRandomKey();
         randomPosition = GenerateRandomPosition();
         DisplayKey(currentKey, randomPosition);
@@ -142,12 +144,10 @@ public class KeyChallengeManager : MonoBehaviour
 
     private void DestroyExistingKey()
     {
-        if (currentKeyPopup != null)
-        {
-            StopAllCoroutines(); 
-            Destroy(currentKeyPopup);
-            currentKeyPopup = null;
-        }
+        if (currentKeyPopup == null) return;
+        StopAllCoroutines(); 
+        Destroy(currentKeyPopup);
+        currentKeyPopup = null;
     }
 
     private void EndKeyChallenge()

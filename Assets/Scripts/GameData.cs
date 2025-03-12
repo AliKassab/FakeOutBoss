@@ -22,14 +22,19 @@ public class GameData : ScriptableObject
     }
 
     private void OnEnable()
+       => ResetData();
+
+    public void ResetData()
     {
         IsAILooking = false;
         IsPlaying = true;
         IsGameActive = false;
+        IsSpotted = false;
     }
 
     public bool IsPlaying = true;
     public bool IsAILooking = false;
     public bool IsGameActive = false;
+    public bool IsSpotted = false;
 }
 
