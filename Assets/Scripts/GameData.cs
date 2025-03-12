@@ -32,6 +32,8 @@ public class GameData : ScriptableObject
         IsSpotted = false;
     }
 
+    public string ChallengeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     public bool IsPlaying = true;
     public bool IsAILooking = false;
     public bool IsGameActive = false;

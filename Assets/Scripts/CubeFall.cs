@@ -3,7 +3,6 @@ using UnityEngine;
 public class CubeFall : MonoBehaviour
 {
     private Rigidbody rb;
-    public TimeScaleManager timeManager;
 
     private bool isFalling = false;
 
@@ -18,7 +17,7 @@ public class CubeFall : MonoBehaviour
         if (!isFalling && rb.linearVelocity.y < -0.1f)
         {
             isFalling = true;
-            timeManager.DoSlowmotion();
+            TimeScaleManager.Instance.DoSlowmotion();
         }
     }
 }

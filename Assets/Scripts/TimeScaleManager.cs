@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TimeScaleManager : MonoBehaviour
+public class TimeScaleManager : SingletonMO<TimeScaleManager>
 {
     public float SlowDownFactor = 0.05f;
     public float SlowDownTime = 2f;

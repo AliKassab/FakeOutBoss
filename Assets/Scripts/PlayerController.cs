@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : SingletonMO<PlayerController>
 {
     [SerializeField] private SpriteRenderer excelScreenSpr;
     [SerializeField] private SpriteRenderer leagueScreenSpr;
