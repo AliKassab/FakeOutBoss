@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ecfb7faa9db71848a41c9b73796ed5c, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  IsPlaying: 1
+  IsPlaying: 0
   IsAILooking: 0
   IsGameActive: 1
