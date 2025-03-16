@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GameData", menuName = "GameData")]
@@ -38,5 +40,15 @@ public class GameData : ScriptableObject
     public bool IsAILooking = false;
     public bool IsGameActive = false;
     public bool IsSpotted = false;
+
+    public static List<AnimationDelay> AnimationClips => Instance.animationDelays;
+
+    [SerializeField] private List<AnimationDelay> animationDelays = new List<AnimationDelay>();
+}
+[Serializable]
+public struct AnimationDelay
+{
+    public Animations name;
+    public AnimationClip clip;
 }
 

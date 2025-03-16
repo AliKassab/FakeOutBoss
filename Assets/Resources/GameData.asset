@@ -14,6 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChallengeCharacters: ABCDEFGHIJKLMNOPQRSTUVWXYZ
   IsPlaying: 1
-  IsAILooking: 0
+  IsAILooking: 1
   IsGameActive: 0
-  IsSpotted: 0
+  IsSpotted: 1
+  animationDelays:
+  - name: 0
+    clip: {fileID: 7400000, guid: 1675b75beab7dd2489e2b0ab2b70ae20, type: 2}
+  - name: 1
+    clip: {fileID: 7400000, guid: 39778b7132c33054bb11ee7cc32134ba, type: 2}
+  - name: 2
+    clip: {fileID: 7400000, guid: 66263f9ecc6f4dd428cdc4f404724ece, type: 2}
+  - name: 3
+    clip: {fileID: 7400000, guid: 04edc6f9b81d3f14c9d487db5d1371f3, type: 2}
+  - name: 4
+    clip: {fileID: 7400000, guid: c399ab4e1703f7141bd1dd747562c7d8, type: 2}
+  - name: 5
+    clip: {fileID: 7400000, guid: 3154c3e0169b0fa4c8a20b8a53e7386c, type: 2}
+  - name: 6
+    clip: {fileID: 7400000, guid: 22aec88a1fa925a42b56ddb0ded3e00a, type: 2}
+  - name: 7
+    clip: {fileID: 7400000, guid: bce12567bb0c0ed408d24281bdf2b8f1, type: 2}
+  - name: 8
+    clip: {fileID: 7400000, guid: cd87555d09c92614b868d2ba2e892522, type: 2}
+  - name: 9
+    clip: {fileID: 7400000, guid: 5aad1cc19c5ff704c813bbc45e660bd7, type: 2}
+  - name: 10
+    clip: {fileID: 7400000, guid: 6b7c9c5bf9b5aea47ba7703bd4398d14, type: 2}
