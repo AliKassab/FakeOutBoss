@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChallengeCharacters: ABCDEFGHIJKLMNOPQRSTUVWXYZ
   IsPlaying: 1
-  IsAILooking: 1
+  IsAILooking: 0
   IsGameActive: 0
-  IsSpotted: 1
+  IsSpotted: 0
   animationDelays:
   - name: 0
     clip: {fileID: 7400000, guid: 1675b75beab7dd2489e2b0ab2b70ae20, type: 2}

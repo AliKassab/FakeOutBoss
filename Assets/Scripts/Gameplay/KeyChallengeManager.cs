@@ -92,7 +92,7 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
     {
         failScreen.SetActive(true);
         GameData.Instance.IsGameActive = false;
-        TimeScaleManager.Instance.ResetTime();
+        TimeScaleManager.Instance.SetTimeScale(0);
     }
     #endregion
 

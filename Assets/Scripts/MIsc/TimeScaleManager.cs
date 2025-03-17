@@ -2,18 +2,19 @@ using UnityEngine;
 
 public class TimeScaleManager : SingletonMO<TimeScaleManager>
 {
-    public float SlowDownFactor = 0.05f;
-    public float SlowDownTime = 2f;
+    [SerializeField] private float SlowDownFactor = 0.05f;
 
     public void DoSlowmotion()
     {
-        Time.timeScale = SlowDownFactor;
+        SetTimeScale(SlowDownFactor);
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
     public void ResetTime()
     {
-        Time.timeScale = 1f;  
+        SetTimeScale(1f);
         Time.fixedDeltaTime = 0.02f;  
     }
+
+    public void SetTimeScale(float timeScale) => Time.timeScale = timeScale;
 }
