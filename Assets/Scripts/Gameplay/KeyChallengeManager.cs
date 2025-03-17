@@ -80,6 +80,7 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
             else
                 GenerateNewKey();
         }
+        else GameData.Instance.IsSpotted = true;
     }
 
     void PassChallenge()
@@ -123,7 +124,7 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
         currentKeyPopup.GetComponent<RectTransform>().anchoredPosition = position;
 
         if (currentKeyPopup.TryGetComponent(out TextMeshProUGUI keyText))
-            keyText.text = key;
+            keyText.text = key.ToUpper();
         else
             Debug.LogError("Key popup prefab missing TextMeshProUGUI component!");
 
