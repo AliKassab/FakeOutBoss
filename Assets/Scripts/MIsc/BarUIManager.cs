@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BarUiManager : MonoBehaviour
+public class BarUiManager : SingletonMO<BarUiManager>
 {
     [SerializeField] private Image overworkBar;
     [SerializeField] private Image suspicionBar;
