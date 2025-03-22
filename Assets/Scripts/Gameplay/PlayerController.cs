@@ -6,6 +6,16 @@ public class PlayerController : SingletonMO<PlayerController>
     [SerializeField] private SpriteRenderer excelScreenSpr;
     [SerializeField] private SpriteRenderer leagueScreenSpr;
 
+    private void OnEnable()
+    {
+        StatsManager.Instance.OnOverworkPressureMax += ToggleWindows;
+    }
+
+    private void OnDisable()
+    {
+        StatsManager.Instance.OnOverworkPressureMax -= ToggleWindows;
+    }
+
     private void Start()
     {
         GetComponent<Animator>().Play("Typing");

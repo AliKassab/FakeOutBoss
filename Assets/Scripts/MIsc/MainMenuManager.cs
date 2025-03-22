@@ -18,8 +18,8 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
     [SerializeField] GameObject mainMenu;
     [SerializeField] GameObject playerCamera;
     [SerializeField] GameObject mainMenuCamera;
-    [SerializeField] GameObject DayTimer;
     [SerializeField] GameObject DayTimerBG;
+    [SerializeField] GameObject BarsParent;
 
     private void OnEnable()
     {
@@ -53,8 +53,8 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
         mainMenu.SetActive(!IsActive);
         mainMenuCamera.SetActive(!IsActive);
         playerCamera.SetActive(IsActive);
-        DayTimer.SetActive(IsActive);
         DayTimerBG.SetActive(IsActive);
+        BarsParent.SetActive(IsActive);
         GameData.Instance.IsGameActive = IsActive;
 
     }
