@@ -7,15 +7,9 @@ public class WeightedItem
 {
     public IAiState state;
     public string animationName;
-    public int weight;
-    public Func<float> weightFunc; // Dynamic weight function
+    public float weight;
 
-    public WeightedItem(IAiState state, Func<float> weightFunc)
-    {
-        this.state = state;
-        this.weightFunc = weightFunc;
-    }
-    public WeightedItem(IAiState state, int weight)
+    public WeightedItem(IAiState state, float weight)
     {
         this.state = state;
         this.weight = weight;
@@ -28,20 +22,20 @@ public class WeightedRandom
 
     public IAiState GetRandomState()
     {
-        int totalWeight = 0;
-        List<(IAiState state, int weight)> calculatedWeights = new();
+        float totalWeight = 0f;
+        List<(IAiState state, float weight)> calculatedWeights = new();
 
         foreach (var item in items)
         {
-            int weight = Mathf.Max(0, Mathf.RoundToInt(item.weightFunc()));
+            float weight = Mathf.Max(0f, item.weight);
             totalWeight += weight;
             calculatedWeights.Add((item.state, weight));
         }
 
-        if (totalWeight == 0) return null;
+        if (totalWeight == 0f) return null;
 
-        int randomValue = UnityEngine.Random.Range(0, totalWeight);
-        int cumulativeWeight = 0;
+        float randomValue = UnityEngine.Random.Range(0f, totalWeight);
+        float cumulativeWeight = 0f;
 
         foreach (var (state, weight) in calculatedWeights)
         {

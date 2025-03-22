@@ -37,8 +37,5 @@ public class CharacterData : ScriptableObject
     public float MaxStandDelay => maxStandDelay;
     public float MinSittingDelay => minSittingDelay;
     public float MaxSittingDelay => maxSittingDelay;
-    public int SittingStateWeight => sittingStateWeight;
-    public int AngryStateWeight => angryStateWeight;
-    public int StandingStateWeight => standingStateWeight;
 }
 

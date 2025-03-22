@@ -17,8 +17,8 @@ public class SittingAngryState : IAiState
 
         float suspicionRatio = StatsManager.Instance.SuspicionRatio;
 
-        weightedRandom.items.Add(new WeightedItem(new StandingState(),() => aiBrain.Data.StandingStateWeight * suspicionRatio));
-        weightedRandom.items.Add(new WeightedItem(new SittingState(), () => aiBrain.Data.SittingStateWeight * (1 - suspicionRatio)));
+        weightedRandom.items.Add(new WeightedItem(new StandingState(), suspicionRatio));
+        weightedRandom.items.Add(new WeightedItem(new SittingState(), 1 - suspicionRatio));
 
         aiBrain.ChangeAnimation("SittingAngry");
     }
