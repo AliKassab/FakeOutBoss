@@ -21,9 +21,9 @@ public class CharacterData : ScriptableObject
         }
     }
 
-    [SerializeField] private int sittingStateWeight = 8;
-    [SerializeField] private int angryStateWeight = 8;
-    [SerializeField] private int standingStateWeight = 2;
+    [SerializeField] private float sittingStateWeight = 8;
+    [SerializeField] private float angryStateWeight = 8;
+    [SerializeField] private float standingStateWeight = 2;
     [SerializeField] private float walkSpeed = 1f;
     [SerializeField] private float lookingDuration = 1f;
     [SerializeField] private float minStandDelay = 1f;
@@ -37,8 +37,8 @@ public class CharacterData : ScriptableObject
     public float MaxStandDelay => maxStandDelay;
     public float MinSittingDelay => minSittingDelay;
     public float MaxSittingDelay => maxSittingDelay;
-    public int SittingStateWeight => sittingStateWeight;
-    public int AngryStateWeight => angryStateWeight;
-    public int StandingStateWeight => standingStateWeight;
+    public float SittingStateWeight => sittingStateWeight;
+    public float AngryStateWeight => angryStateWeight;
+    public float StandingStateWeight => standingStateWeight;
 }
 

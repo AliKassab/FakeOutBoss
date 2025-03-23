@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 495dacc42d29a1e4b90239c52fe980a2, type: 3}
   m_Name: LeftDeskDude
   m_EditorClassIdentifier: 
-  sittingStateWeight: 8
-  angryStateWeight: 8
-  standingStateWeight: 2
+  sittingStateWeight: 6
+  angryStateWeight: 6
+  standingStateWeight: 4
   walkSpeed: 1
   lookingDuration: 3
   minStandDelay: 1

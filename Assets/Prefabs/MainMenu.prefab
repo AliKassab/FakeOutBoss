@@ -25,8 +25,8 @@ RectTransform:
   m_GameObject: {fileID: 1435293524508226095}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2828278361383498324}
   - {fileID: 1453254035430734981}
@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -313.6126, y: 1.6948242}
+  m_AnchoredPosition: {x: -246.2, y: 4.35}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1900503340309228498
@@ -149,8 +149,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 24.187378, y: -116.305176}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 48.5, y: -116.305176}
+  m_SizeDelta: {x: 140, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5207870185624634474
 CanvasRenderer:
@@ -270,8 +270,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 24.187378, y: -220.80515}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 67.1, y: -220.80515}
+  m_SizeDelta: {x: 140, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1405273886022343871
 CanvasRenderer:
@@ -465,7 +465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -6.059}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.27, y: -3.63}
+  m_AnchoredPosition: {x: -6.28, y: -6.11}
   m_SizeDelta: {x: 206.875, y: 476.6667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6583061093037618238
@@ -946,8 +946,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1024,7 +1024,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.848}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.4, y: -3.66}
+  m_AnchoredPosition: {x: 4.47, y: 5.3}
   m_SizeDelta: {x: 206.875, y: 476.6667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3244768185249962141
