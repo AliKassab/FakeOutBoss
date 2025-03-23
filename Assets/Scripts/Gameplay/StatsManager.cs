@@ -19,6 +19,8 @@ public class StatsManager : SingletonMO<StatsManager>
 
     private void Update()
     {
+        if(!GameData.Instance.IsGameActive) return;
+
         bool isPlaying = GameData.Instance.IsPlaying;
 
         overworkPressure = Mathf.Clamp(overworkPressure + (isPlaying ? -decayRate : overworkIncreaseRate) * Time.deltaTime, 0, maxValue);

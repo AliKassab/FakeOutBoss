@@ -16,10 +16,10 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
 
     [Header("Scene References")]
     [SerializeField] GameObject mainMenu;
-    [SerializeField] GameObject playerCamera;
+    [SerializeField] GameObject timeline;
     [SerializeField] GameObject mainMenuCamera;
-    [SerializeField] GameObject DayTimerBG;
-    [SerializeField] GameObject BarsParent;
+    [SerializeField] GameObject dayTimerBG;
+    [SerializeField] GameObject barsParent;
 
     private void OnEnable()
     {
@@ -27,7 +27,9 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
         quitButton.onClick.AddListener(Quit);
         loseScreenGoMenu.onClick.AddListener(GoBackToMenu);
         winScreenGoMenu.onClick.AddListener(GoBackToMenu);
-        ToggleGameState(false, false);
+        ToggleGameUI(false);
+        ToggleCameras(false);
+        ToggleGameActivity(false);
     }
     private void OnDisable()
     {
@@ -36,26 +38,35 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
         loseScreenGoMenu.onClick.RemoveAllListeners();
         winScreenGoMenu.onClick.RemoveAllListeners();
     }
-    private void PlayGame()
-        => ToggleGameState(true);
-    private void Quit()
+    public void PlayGame()
+    {
+        clickAudio.Play();
+        TimeScaleManager.Instance.SetTimeScale(1f);
+        ToggleMenuUI(true);
+        ToggleCameras(true);
+    }
+
+    public void Quit()
         => Application.Quit();
 
     public void GoBackToMenu()
         => SceneManager.LoadScene(0);
 
-    private void ToggleGameState(bool IsActive, bool ShouldPlayAudio = true)
+    public void ToggleGameUI(bool IsActive)
     {
-        if (ShouldPlayAudio)
-            clickAudio.Play();
-
-        TimeScaleManager.Instance.SetTimeScale(1f);
-        mainMenu.SetActive(!IsActive);
-        mainMenuCamera.SetActive(!IsActive);
-        playerCamera.SetActive(IsActive);
-        DayTimerBG.SetActive(IsActive);
-        BarsParent.SetActive(IsActive);
-        GameData.Instance.IsGameActive = IsActive;
-
+        dayTimerBG.SetActive(IsActive);
+        barsParent.SetActive(IsActive);
     }
+
+    public void ToggleMenuUI(bool IsActive) => mainMenu.SetActive(!IsActive);
+
+    public void ToggleCameras(bool IsActive)
+    {
+        mainMenuCamera.SetActive(!IsActive);
+        timeline.SetActive(IsActive);
+    }
+
+    public void ToggleGameActivity(bool IsActive) 
+        => GameData.Instance.IsGameActive = IsActive;
+
 }
