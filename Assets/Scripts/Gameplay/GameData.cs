@@ -40,7 +40,7 @@ public class GameData : ScriptableObject
     public bool IsAILooking = false;
     public bool IsGameActive = false;
     public bool IsSpotted = false;
-
+    public int creditNamesIndex = 0;
     public static List<AnimationDelay> AnimationClips => Instance.animationDelays;
 
     [SerializeField] private List<AnimationDelay> animationDelays = new List<AnimationDelay>();
