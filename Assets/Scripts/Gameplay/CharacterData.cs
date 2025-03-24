@@ -30,6 +30,8 @@ public class CharacterData : ScriptableObject
     [SerializeField] private float maxStandDelay = 3f;
     [SerializeField] private float minSittingDelay = 1f;
     [SerializeField] private float maxSittingDelay = 3f;
+    [SerializeField] private float minDrinkingDelay = 3f;
+    [SerializeField] private float maxDrinkingDelay = 5f;
 
     public float WalkSpeed => walkSpeed;
     public float LookingDuration => lookingDuration;
@@ -37,6 +39,8 @@ public class CharacterData : ScriptableObject
     public float MaxStandDelay => maxStandDelay;
     public float MinSittingDelay => minSittingDelay;
     public float MaxSittingDelay => maxSittingDelay;
+    public float MinDrinkingDelay => minDrinkingDelay;
+    public float MaxDrinkingDelay => maxDrinkingDelay;
     public float SittingStateWeight => sittingStateWeight;
     public float AngryStateWeight => angryStateWeight;
     public float StandingStateWeight => standingStateWeight;

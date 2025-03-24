@@ -16,9 +16,9 @@ public class WalkingToWaypointState : IAiState
         else
         {
             currentPath = aiBrain.WaypointPaths[Random.Range(0, aiBrain.WaypointPaths.Count)];
+            aiBrain.CurrentPath = currentPath;
             currentWaypointIndex = 0;
             aiBrain.LookTowards(currentPath.wayPoints[currentWaypointIndex].position);
-            aiBrain.CurrentPath = currentPath;
         }
         aiBrain.ChangeAnimation("Walking");
     }
@@ -38,13 +38,14 @@ public class WalkingToWaypointState : IAiState
             {
                 currentWaypointIndex++;
                 aiBrain.LookTowards(currentPath.wayPoints[currentWaypointIndex].position);
+                aiBrain.currentWaypoint = targetWaypoint.gameObject;
             }
             else
             {
                 if (targetWaypoint.name == "PlayerWaypoint")
                     aiBrain.ChangeState(new LookingState());
                 else
-                    aiBrain.ChangeState(new WalkingBackToOriginState(aiBrain.CurrentPath));
+                    aiBrain.ChangeState(new DrinkingState());
             }
         }
     }

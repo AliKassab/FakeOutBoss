@@ -31,6 +31,12 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
     #region Unity Lifecycle
     void Start() => failScreen.SetActive(false);
 
+    private void OnEnable()
+        => StatsManager.Instance.OnSuspicionMax += FailChallenge;
+
+    private void OnDisable()
+        => StatsManager.Instance.OnSuspicionMax -= FailChallenge;
+
     void Update()
     {
         if (!ShouldProcessInput()) return;

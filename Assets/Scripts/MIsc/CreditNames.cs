@@ -11,6 +11,11 @@ public class CreditNames : MonoBehaviour
         => GetComponent<TextMeshProUGUI>().text = names[index];
 
     private void OnDisable()
-        => index++;
+    {
+        if (index >= names.Count-1)
+            index = 0;
+        else
+            index++;
+    }
 
 }

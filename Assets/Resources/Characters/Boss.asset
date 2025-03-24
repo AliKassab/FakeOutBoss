@@ -21,3 +21,5 @@ MonoBehaviour:
   maxStandDelay: 3
   minSittingDelay: 1
   maxSittingDelay: 3
+  minDrinkingDelay: 3
+  maxDrinkingDelay: 5

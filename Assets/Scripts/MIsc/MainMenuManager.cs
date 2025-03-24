@@ -8,8 +8,10 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
     [Header("Buttons")]
     [SerializeField] Button playButton;
     [SerializeField] Button quitButton;
+    [SerializeField] Button infoButton;
     [SerializeField] Button loseScreenGoMenu;
     [SerializeField] Button winScreenGoMenu;
+    [SerializeField] GameObject infoPanel;
 
     [Header("Audio")]
     [SerializeField] AudioSource clickAudio;
@@ -25,6 +27,7 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
     {
         playButton.onClick.AddListener(PlayGame);
         quitButton.onClick.AddListener(Quit);
+        infoButton.onClick.AddListener(OpenInfoPanel);
         loseScreenGoMenu.onClick.AddListener(GoBackToMenu);
         winScreenGoMenu.onClick.AddListener(GoBackToMenu);
         ToggleGameUI(false);
@@ -35,6 +38,7 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
     {
         playButton.onClick.RemoveAllListeners();
         quitButton.onClick.RemoveAllListeners();
+        infoButton.onClick.RemoveAllListeners();
         loseScreenGoMenu.onClick.RemoveAllListeners();
         winScreenGoMenu.onClick.RemoveAllListeners();
     }
@@ -68,5 +72,7 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
 
     public void ToggleGameActivity(bool IsActive) 
         => GameData.Instance.IsGameActive = IsActive;
+
+    public void OpenInfoPanel() => infoPanel.SetActive(!infoPanel.activeSelf);   
 
 }

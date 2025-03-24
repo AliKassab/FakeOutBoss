@@ -9,6 +9,8 @@ public partial class AiBrain : MonoBehaviour
     [SerializeField] private List<WaypointPath> waypointPaths;
     [SerializeField] public CharacterData characterData;
 
+    public GameObject currentWaypoint;
+
     private Animator animator;
     private IAiState currentState;
 
