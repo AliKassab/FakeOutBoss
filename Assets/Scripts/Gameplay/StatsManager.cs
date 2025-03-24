@@ -23,7 +23,7 @@ public class StatsManager : SingletonMO<StatsManager>
 
         bool isPlaying = GameData.Instance.IsPlaying;
 
-        overworkPressure = Mathf.Clamp(overworkPressure + (isPlaying ? -decayRate : overworkIncreaseRate) * Time.deltaTime, 0, maxValue);
+        overworkPressure = Mathf.Clamp(overworkPressure  + (isPlaying ? -decayRate : overworkIncreaseRate) * Time.deltaTime, 0, maxValue);
         suspicion = Mathf.Clamp(suspicion + (isPlaying ? suspicionIncreaseRate : -decayRate) * Time.deltaTime, 0, maxValue);
 
         if (overworkPressure >= maxValue) OnOverworkPressureMax?.Invoke();
