@@ -1,13 +1,14 @@
 // AiBrain.cs
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public partial class AiBrain : MonoBehaviour
 {
     [SerializeField] private Transform originPosition;
     [SerializeField] private List<WaypointPath> waypointPaths;
     [SerializeField] public CharacterData characterData;
+
+    public IPathfindingStrategy pathfindingStrategy;
 
     public GameObject currentWaypoint;
 
