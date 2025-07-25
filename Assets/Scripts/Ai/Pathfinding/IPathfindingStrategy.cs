@@ -3,6 +3,17 @@ using UnityEngine;
 
 public interface IPathfindingStrategy
 {
-    List<Vector3> FindPath(Vector3 start, Vector3 end, PathfindingGrid grid);
-    string Name { get; }
+    List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid);
+
+    List<PathfindingNode> ReconstructPath(Dictionary<PathfindingNode, PathfindingNode> cameFrom, PathfindingNode start, PathfindingNode end);
+    PathfindingAlgorithm Name { get => Name;}
+}
+
+
+public enum PathfindingAlgorithm
+{
+    Direct,
+    BFS,
+    DFS,
+    AStar
 }

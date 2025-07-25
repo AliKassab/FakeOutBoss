@@ -20,6 +20,6 @@ public class StandingState : IAiState
     {
         timer -= Time.deltaTime;
         if (timer <= 0)
-            aiBrain.ChangeState(new WalkingToWaypointState());
+            aiBrain.ChangeState(new WalkOnPathState());
     }
 }

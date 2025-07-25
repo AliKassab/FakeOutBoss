@@ -5,9 +5,15 @@ using UnityEngine;
 [Serializable]
 public class DirectPathfindingStrategy : IPathfindingStrategy
 {
-    public string Name => "Direct";
-    public List<Vector3> FindPath(Vector3 start, Vector3 end, PathfindingGrid grid)
+    PathfindingAlgorithm Name { get => PathfindingAlgorithm.Direct; }
+
+    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid)
     {
-        return new List<Vector3> { start, end };
+        throw new NotImplementedException();
+    }
+
+    public List<PathfindingNode> ReconstructPath(Dictionary<PathfindingNode, PathfindingNode> cameFrom, PathfindingNode start, PathfindingNode end)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -8,10 +8,9 @@ public partial class AiBrain : MonoBehaviour
     [SerializeField] private List<WaypointPath> waypointPaths;
     [SerializeField] public CharacterData characterData;
 
+    public PathfindingAlgorithm pathfindingAlgorithm;
     public IPathfindingStrategy pathfindingStrategy;
-
     public GameObject currentWaypoint;
-
     private Animator animator;
     private IAiState currentState;
 
@@ -27,6 +26,8 @@ public partial class AiBrain : MonoBehaviour
         animator = GetComponent<Animator>();
         Random.InitState(System.Environment.TickCount);
         ChangeState(new SittingState());
+
+        pathfindingStrategy = PathfindingAlgorithms.Instance.Strategies[pathfindingAlgorithm];
     }
 
     private void Update()
