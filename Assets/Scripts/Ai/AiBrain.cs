@@ -5,9 +5,7 @@ using System.Collections.Generic;
 public partial class AiBrain : MonoBehaviour
 {
     [SerializeField] private Transform originPosition;
-    [SerializeField] private List<WaypointPath> waypointPaths;
     [SerializeField] public CharacterData characterData;
-
     public PathfindingAlgorithm pathfindingAlgorithm;
     public IPathfindingStrategy pathfindingStrategy;
     public GameObject currentWaypoint;
@@ -17,7 +15,6 @@ public partial class AiBrain : MonoBehaviour
     // Public properties for states to access
     public Transform OriginPosition => originPosition;
     public CharacterData Data => characterData;
-    public List<WaypointPath> WaypointPaths => waypointPaths;
     public GameObject CurrentTarget { get; set; }
     public WaypointPath CurrentPath { get; set; }
 

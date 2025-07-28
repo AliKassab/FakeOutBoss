@@ -5,11 +5,46 @@ public class PathfindingGrid : MonoBehaviour
 {
     private Dictionary<Vector3, PathfindingNode> nodes = new Dictionary<Vector3, PathfindingNode>();
 
+    [Header("Grid Settings")]
+    public float cellSize = 1f;
+
+    public float gizmosSize = 0.9f; // Size of the gizmos spheres
+
+    void Start()
+    {
+        InitializeGrid();
+    }
+
+    [ContextMenu("Initialize Grid")]
+    public void InitializeGrid()
+    {
+        nodes.Clear();
+        int width = Mathf.RoundToInt(transform.localScale.x / cellSize);
+        int height = Mathf.RoundToInt(transform.localScale.z / cellSize);
+        Vector3 gridOrigin = transform.position - new Vector3((width * cellSize) / 2f, 0, (height * cellSize) / 2f);
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                Vector3 pos = gridOrigin + new Vector3(x * cellSize, 0, z * cellSize);
+                CreateNode(pos);
+            }
+        }
+    }
+
     public void CreateNode(Vector3 position)
     {
         if (!nodes.ContainsKey(position))
         {
-            nodes[position] = new PathfindingNode();
+            // Create a new GameObject for the node
+            GameObject nodeObj = new GameObject($"Node_{position.x}_{position.z}");
+            nodeObj.transform.parent = this.transform;
+            nodeObj.transform.position = position;
+            // Add a PathfindingNode component (must be a MonoBehaviour)
+            PathfindingNode nodeComp = nodeObj.AddComponent<PathfindingNode>();
+            nodeComp.position = position;
+            nodeComp.isWalkable = true;
+            nodes[position] = nodeComp;
         }
     }
 
@@ -38,5 +73,17 @@ public class PathfindingGrid : MonoBehaviour
         return node;
     }
 
-    // Get neighbors of a node is now handled by PathfindingNode
+    // Visualize the grid in the editor
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        foreach (var kvp in nodes)
+        {
+            if (kvp.Value.isWalkable)
+                Gizmos.color = Color.green;
+            else
+                Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(kvp.Key, cellSize * gizmosSize);
+        }
+    }
 }

@@ -24,7 +24,7 @@ public class DFSPathfindingStrategy : IPathfindingStrategy
 
             foreach (PathfindingNode neighbor in current.GetNeighbors(grid))
             {
-                if (!visited.Contains(neighbor) && neighbor.IsWalkable == true)
+                if (!visited.Contains(neighbor) && neighbor.isWalkable == true)
                 {
                     stack.Push(neighbor);
                     visited.Add(neighbor);

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathfindingNode
+public class PathfindingNode : MonoBehaviour
 {
-    public Vector3 Position { get; set; }
-    public bool IsWalkable { get; set; } = true;
+    public Vector3 position;
+    public bool isWalkable = true;
 
     // Returns the neighbors of this node using the grid
     public List<PathfindingNode> GetNeighbors(PathfindingGrid grid)
@@ -19,7 +19,7 @@ public class PathfindingNode
         };
         foreach (Vector3 dir in directions)
         {
-            Vector3 neighborPos = Position + dir;
+            Vector3 neighborPos = position + dir;
             PathfindingNode neighbor = grid.GetNodeByPosition(neighborPos);
             if (neighbor != null)
             {

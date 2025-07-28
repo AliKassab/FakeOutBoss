@@ -24,7 +24,7 @@ public class BFSPathfindingStrategy : IPathfindingStrategy
 
             foreach (PathfindingNode neighbor in current.GetNeighbors(grid))
             {
-                if (!visited.Contains(neighbor) && neighbor.IsWalkable == true)
+                if (!visited.Contains(neighbor) && neighbor.isWalkable == true)
                 {
                     queue.Enqueue(neighbor);
                     visited.Add(neighbor);

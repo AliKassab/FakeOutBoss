@@ -12,7 +12,7 @@ public class WalkOnPathState : IAiState
     {
         this.aiBrain = aiBrain;
         // Example: pick a random path and use pathfinding to get a path from AI's position to the first waypoint
-        if (aiBrain.WaypointPaths.Count == 0)
+        if (path.Count == 0)
         {
             Debug.LogError("No waypoint paths assigned!");
             path = null;
@@ -32,7 +32,7 @@ public class WalkOnPathState : IAiState
         path = aiBrain.pathfindingStrategy.FindPath(grid.GetNodeByPosition(start), grid.GetNodeByPosition(end), grid);
         pathIndex = 0;
         if (path != null && path.Count > 0)
-            aiBrain.LookTowards(path[pathIndex].Position);
+            aiBrain.LookTowards(path[pathIndex].position);
         aiBrain.ChangeAnimation("Walking");
     }
 
@@ -42,7 +42,7 @@ public class WalkOnPathState : IAiState
     {
         if (path == null || path.Count == 0 || pathIndex >= path.Count) return;
 
-        Vector3 target = path[pathIndex].Position;
+        Vector3 target = path[pathIndex].position;
         aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, target, aiBrain.Data.WalkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(aiBrain.transform.position, target) <= 0.1f)
@@ -50,7 +50,7 @@ public class WalkOnPathState : IAiState
             pathIndex++;
             if (pathIndex < path.Count)
             {
-                aiBrain.LookTowards(path[pathIndex].Position);
+                aiBrain.LookTowards(path[pathIndex].position);
             }
             else
             {
