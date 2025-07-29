@@ -1,6 +1,5 @@
 // AiBrain.cs
 using UnityEngine;
-using System.Collections.Generic;
 
 public partial class AiBrain : MonoBehaviour
 {
@@ -8,7 +7,7 @@ public partial class AiBrain : MonoBehaviour
     [SerializeField] public CharacterData characterData;
     public PathfindingAlgorithm pathfindingAlgorithm;
     public IPathfindingStrategy pathfindingStrategy;
-    public GameObject currentWaypoint;
+    [SerializeField] public PathfindingPath pathfindingPath;
     private Animator animator;
     private IAiState currentState;
 

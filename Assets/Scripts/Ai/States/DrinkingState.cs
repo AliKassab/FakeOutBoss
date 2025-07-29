@@ -19,6 +19,6 @@ public class DrinkingState : IAiState
     {
         timer -= Time.deltaTime;
         if (timer <= 0)
-            aiBrain.ChangeState(new WalkingBackToOriginState(aiBrain.CurrentPath));
+            aiBrain.ChangeState(new WalkOnPathState());
     }
 }

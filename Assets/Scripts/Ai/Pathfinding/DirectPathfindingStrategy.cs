@@ -7,7 +7,7 @@ public class DirectPathfindingStrategy : IPathfindingStrategy
 {
     PathfindingAlgorithm Name { get => PathfindingAlgorithm.Direct; }
 
-    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid)
+    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {
         throw new NotImplementedException();
     }

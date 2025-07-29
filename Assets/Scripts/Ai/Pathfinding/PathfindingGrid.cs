@@ -3,21 +3,30 @@ using UnityEngine;
 
 public class PathfindingGrid : MonoBehaviour
 {
+    public static PathfindingGrid Instance { get; private set; }
     private Dictionary<Vector3, PathfindingNode> nodes = new Dictionary<Vector3, PathfindingNode>();
+    public bool IsInitialized { get; private set; } = false;
 
     [Header("Grid Settings")]
     public float cellSize = 1f;
 
     public float gizmosSize = 0.9f; // Size of the gizmos spheres
 
-    void Start()
+    void Awake()
     {
-        InitializeGrid();
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning("Multiple PathfindingGrid instances found! Destroying duplicate.");
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     [ContextMenu("Initialize Grid")]
     public void InitializeGrid()
     {
+        IsInitialized = false;
         nodes.Clear();
         int width = Mathf.RoundToInt(transform.localScale.x / cellSize);
         int height = Mathf.RoundToInt(transform.localScale.z / cellSize);
@@ -30,6 +39,7 @@ public class PathfindingGrid : MonoBehaviour
                 CreateNode(pos);
             }
         }
+        IsInitialized = true;
     }
 
     public void CreateNode(Vector3 position)

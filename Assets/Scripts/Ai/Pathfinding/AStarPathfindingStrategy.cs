@@ -7,7 +7,7 @@ public class AStarPathfindingStrategy : IPathfindingStrategy
 {
     PathfindingAlgorithm Name { get => PathfindingAlgorithm.AStar; }
 
-    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid)
+    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {
         throw new NotImplementedException();
     }

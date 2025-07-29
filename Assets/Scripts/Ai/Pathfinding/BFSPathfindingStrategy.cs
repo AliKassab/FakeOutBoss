@@ -7,7 +7,7 @@ public class BFSPathfindingStrategy : IPathfindingStrategy
 {
     PathfindingAlgorithm Name { get => PathfindingAlgorithm.BFS;}
 
-    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid)
+    public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {
         Queue<PathfindingNode> queue = new Queue<PathfindingNode>();
         HashSet<PathfindingNode> visited = new HashSet<PathfindingNode>();
@@ -22,7 +22,7 @@ public class BFSPathfindingStrategy : IPathfindingStrategy
             if (current == end)
                 return ReconstructPath(cameFrom, start, end);
 
-            foreach (PathfindingNode neighbor in current.GetNeighbors(grid))
+            foreach (PathfindingNode neighbor in current.GetNeighbors(PathfindingGrid.Instance))
             {
                 if (!visited.Contains(neighbor) && neighbor.isWalkable == true)
                 {
@@ -33,7 +33,7 @@ public class BFSPathfindingStrategy : IPathfindingStrategy
             }
         }
         
-        return new List<PathfindingNode> { start, end };
+        return new List<PathfindingNode>(); // Return an empty path if no path is found
     }
 
     public List<PathfindingNode> ReconstructPath(Dictionary<PathfindingNode, PathfindingNode> cameFrom, PathfindingNode start, PathfindingNode end)

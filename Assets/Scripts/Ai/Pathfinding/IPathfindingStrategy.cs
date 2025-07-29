@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IPathfindingStrategy
 {
-    List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end, PathfindingGrid grid);
+    List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end);
 
     List<PathfindingNode> ReconstructPath(Dictionary<PathfindingNode, PathfindingNode> cameFrom, PathfindingNode start, PathfindingNode end);
     PathfindingAlgorithm Name { get => Name;}

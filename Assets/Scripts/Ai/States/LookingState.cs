@@ -26,6 +26,6 @@ public class LookingState : IAiState
         if (timer <= 0)
             GameData.Instance.IsSpotted = true;
         else if(!GameData.Instance.IsPlaying)
-            aiBrain.ChangeState(new WalkingBackToOriginState(aiBrain.CurrentPath));
+            aiBrain.ChangeState(new WalkOnPathState());
     }
 }
