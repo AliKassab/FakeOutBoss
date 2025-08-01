@@ -83,6 +83,23 @@ public class PathfindingGrid : MonoBehaviour
         return node;
     }
 
+    // Get the nearest node to a given position
+    public PathfindingNode GetNearestNode(Vector3 position)
+    {
+        PathfindingNode nearest = null;
+        float minDist = float.MaxValue;
+        foreach (var node in nodes.Values)
+        {
+            float dist = Vector3.Distance(node.position, position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = node;
+            }
+        }
+        return nearest;
+    }
+
     // Visualize the grid in the editor
     private void OnDrawGizmos()
     {

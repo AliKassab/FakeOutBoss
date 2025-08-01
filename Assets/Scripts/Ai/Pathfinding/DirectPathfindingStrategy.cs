@@ -9,11 +9,15 @@ public class DirectPathfindingStrategy : IPathfindingStrategy
 
     public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {
-        throw new NotImplementedException();
+        var path = new List<PathfindingNode>();
+        if (start != null) path.Add(start);
+        if (end != null && end != start) path.Add(end);
+        return path;
     }
 
     public List<PathfindingNode> ReconstructPath(Dictionary<PathfindingNode, PathfindingNode> cameFrom, PathfindingNode start, PathfindingNode end)
     {
-        throw new NotImplementedException();
+        // For direct path, just return start and end
+        return FindPath(start, end);
     }
 }

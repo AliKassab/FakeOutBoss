@@ -10,25 +10,12 @@ public class WalkOnPathState : IAiState
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        // Ensure there are waypoints to walk to
-        if (aiBrain.CurrentPath == null || aiBrain.CurrentPath.wayPoints == null || aiBrain.CurrentPath.wayPoints.Length == 0)
+        aiBrain.pathfindingPath.Initialize(aiBrain.pathfindingStrategy, aiBrain.transform.position);
+                // Ensure there are waypoints to walk to
+        if (aiBrain.pathfindingPath.Path == null || aiBrain.pathfindingPath.Path.Count == 0)
         {
-            Debug.LogError("No waypoint paths assigned!");
-            return;
+            aiBrain.pathfindingPath.Initialize(new DirectPathfindingStrategy(), aiBrain.transform.position);
         }
-
-        PathfindingGrid grid = aiBrain.GetComponent<PathfindingGrid>();
-        if (grid == null || !grid.IsInitialized)
-        {
-            Debug.LogError("PathfindingGrid component not found or not initialized on AiBrain GameObject.");
-            return;
-        }
-
-        // Use the first and last waypoints as start/end for pathfinding
-        Vector3 start = aiBrain.transform.position;
-        Vector3 end = aiBrain.CurrentPath.wayPoints[aiBrain.CurrentPath.wayPoints.Length - 1].position;
-
-        aiBrain.pathfindingPath.Initialize(aiBrain.pathfindingStrategy);
         pathIndex = 0;
         if (aiBrain.pathfindingPath.IsValid && aiBrain.pathfindingPath.Path.Count > 0)
             aiBrain.LookTowards(aiBrain.pathfindingPath.Path[pathIndex].position);
@@ -39,7 +26,10 @@ public class WalkOnPathState : IAiState
 
     public void Update()
     {
-        if (aiBrain.pathfindingPath == null || !aiBrain.pathfindingPath.IsValid || aiBrain.pathfindingPath.Path.Count == 0 || pathIndex >= aiBrain.pathfindingPath.Path.Count)
+        if (aiBrain.pathfindingPath == null
+        || !aiBrain.pathfindingPath.IsValid
+        || aiBrain.pathfindingPath.Path.Count == 0
+        || pathIndex >= aiBrain.pathfindingPath.Path.Count)
             return;
 
         Vector3 target = aiBrain.pathfindingPath.Path[pathIndex].position;
@@ -47,16 +37,15 @@ public class WalkOnPathState : IAiState
 
         if (Vector3.Distance(aiBrain.transform.position, target) <= 0.1f)
         {
+            aiBrain.pathfindingPath.currentNode = aiBrain.pathfindingPath.Path[pathIndex];
             pathIndex++;
             if (pathIndex < aiBrain.pathfindingPath.Path.Count)
-            {
                 aiBrain.LookTowards(aiBrain.pathfindingPath.Path[pathIndex].position);
-            }
             else
             {
-                if (aiBrain.CurrentPath.wayPoints[aiBrain.CurrentPath.wayPoints.Length - 1].name == "PlayerWaypoint")
+                if (aiBrain.pathfindingPath.IsOnLookingNode())
                     aiBrain.ChangeState(new LookingState());
-                else
+                else if (aiBrain.pathfindingPath.IsOnDrinkingNode())
                     aiBrain.ChangeState(new DrinkingState());
             }
         }

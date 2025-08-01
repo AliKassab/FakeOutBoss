@@ -3,20 +3,13 @@ using UnityEngine;
 
 public partial class AiBrain : MonoBehaviour
 {
-    [SerializeField] private Transform originPosition;
     [SerializeField] public CharacterData characterData;
     public PathfindingAlgorithm pathfindingAlgorithm;
     public IPathfindingStrategy pathfindingStrategy;
     [SerializeField] public PathfindingPath pathfindingPath;
     private Animator animator;
     private IAiState currentState;
-
-    // Public properties for states to access
-    public Transform OriginPosition => originPosition;
     public CharacterData Data => characterData;
-    public GameObject CurrentTarget { get; set; }
-    public WaypointPath CurrentPath { get; set; }
-
     private void Start()
     {
         animator = GetComponent<Animator>();

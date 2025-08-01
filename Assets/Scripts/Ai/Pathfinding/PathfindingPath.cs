@@ -5,21 +5,25 @@ using UnityEngine;
 [Serializable]
 public class PathfindingPath
 {
-    private List<PathfindingNode> path = new List<PathfindingNode>();
-    [SerializeField] private PathfindingNode startNode;
     [SerializeField] private List<PathfindingNode> endNodes = new List<PathfindingNode>();
-    [SerializeField] private PathfindingNode chosenEndNode;
+    [SerializeField] private PathfindingNode lookingNode;
+    [SerializeField] private PathfindingNode drinkingNode;
+    
     public bool IsValid { get; private set; } = false;
     public IReadOnlyList<PathfindingNode> Path => path;
+    [HideInInspector] public PathfindingNode currentNode;
 
-    public void Initialize(IPathfindingStrategy strategy)
+    private List<PathfindingNode> path = new List<PathfindingNode>();
+    private PathfindingNode startNode;
+    private PathfindingNode chosenEndNode;
+    private PathfindingNode originNode;
+
+    public void Initialize(IPathfindingStrategy strategy, Vector3 aiPosition)
     {
-        endNodes.Clear();
-        foreach (PathfindingNode end in endNodes)
-        {
-            if (end != null)
-                endNodes.Add(end);
-        }
+        startNode = currentNode = PathfindingGrid.Instance.GetNearestNode(aiPosition);
+        if (originNode == null && startNode != null)
+            originNode = startNode;
+
         chosenEndNode = null;
         IsValid = false;
         path.Clear();
@@ -32,4 +36,7 @@ public class PathfindingPath
             IsValid = path != null && path.Count > 0;
         }
     }
+
+    public bool IsOnLookingNode() => currentNode == lookingNode;
+    public bool IsOnDrinkingNode() => currentNode == drinkingNode;
 }
