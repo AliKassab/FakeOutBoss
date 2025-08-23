@@ -10,10 +10,9 @@ public class PathfindingPath
     [SerializeField] private PathfindingNode drinkingNode;
     
     public bool IsValid { get; private set; } = false;
-    public IReadOnlyList<PathfindingNode> Path => path;
     [HideInInspector] public PathfindingNode currentNode;
 
-    private List<PathfindingNode> path = new List<PathfindingNode>();
+    public List<PathfindingNode> path = new List<PathfindingNode>();
     private PathfindingNode startNode;
     private PathfindingNode chosenEndNode;
     private PathfindingNode originNode;
@@ -27,7 +26,7 @@ public class PathfindingPath
         chosenEndNode = null;
         IsValid = false;
         path.Clear();
-        if (PathfindingGrid.Instance != null && PathfindingGrid.Instance.IsInitialized && startNode != null && endNodes.Count > 0)
+        if (PathfindingGrid.Instance.IsInitialized && startNode != null && endNodes.Count > 0)
         {
             // Randomly pick one end node
             int idx = UnityEngine.Random.Range(0, endNodes.Count);

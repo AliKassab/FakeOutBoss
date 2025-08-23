@@ -7,6 +7,7 @@ public partial class AiBrain : MonoBehaviour
     public PathfindingAlgorithm pathfindingAlgorithm;
     public IPathfindingStrategy pathfindingStrategy;
     [SerializeField] public PathfindingPath pathfindingPath;
+    public Vector3 target;
     private Animator animator;
     private IAiState currentState;
     public CharacterData Data => characterData;
@@ -14,14 +15,15 @@ public partial class AiBrain : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         Random.InitState(System.Environment.TickCount);
+        pathfindingStrategy = PathfindingAlgorithms.Instance.Strategies[pathfindingAlgorithm];
+
         ChangeState(new SittingState());
 
-        pathfindingStrategy = PathfindingAlgorithms.Instance.Strategies[pathfindingAlgorithm];
     }
 
     private void Update()
     {
-        if (!GameData.Instance.IsGameActive) return;
+        //if (!GameData.Instance.IsGameActive) return;
         currentState?.Update();
     }
 

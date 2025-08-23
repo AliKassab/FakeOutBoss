@@ -12,13 +12,10 @@ public class WalkOnPathState : IAiState
         this.aiBrain = aiBrain;
         aiBrain.pathfindingPath.Initialize(aiBrain.pathfindingStrategy, aiBrain.transform.position);
                 // Ensure there are waypoints to walk to
-        if (aiBrain.pathfindingPath.Path == null || aiBrain.pathfindingPath.Path.Count == 0)
-        {
-            aiBrain.pathfindingPath.Initialize(new DirectPathfindingStrategy(), aiBrain.transform.position);
-        }
+
         pathIndex = 0;
-        if (aiBrain.pathfindingPath.IsValid && aiBrain.pathfindingPath.Path.Count > 0)
-            aiBrain.LookTowards(aiBrain.pathfindingPath.Path[pathIndex].position);
+        if (aiBrain.pathfindingPath.IsValid && aiBrain.pathfindingPath.path.Count > 0)
+            aiBrain.LookTowards(aiBrain.pathfindingPath.path[pathIndex].position);
         aiBrain.ChangeAnimation("Walking");
     }
 
@@ -28,19 +25,20 @@ public class WalkOnPathState : IAiState
     {
         if (aiBrain.pathfindingPath == null
         || !aiBrain.pathfindingPath.IsValid
-        || aiBrain.pathfindingPath.Path.Count == 0
-        || pathIndex >= aiBrain.pathfindingPath.Path.Count)
+        || aiBrain.pathfindingPath.path.Count == 0
+        || pathIndex >= aiBrain.pathfindingPath.path.Count)
             return;
 
-        Vector3 target = aiBrain.pathfindingPath.Path[pathIndex].position;
+        Vector3 target = aiBrain.pathfindingPath.path[pathIndex].position;
+        aiBrain.target = target;
         aiBrain.transform.position = Vector3.MoveTowards(aiBrain.transform.position, target, aiBrain.Data.WalkSpeed * Time.deltaTime);
 
         if (Vector3.Distance(aiBrain.transform.position, target) <= 0.1f)
         {
-            aiBrain.pathfindingPath.currentNode = aiBrain.pathfindingPath.Path[pathIndex];
+            aiBrain.pathfindingPath.currentNode = aiBrain.pathfindingPath.path[pathIndex];
             pathIndex++;
-            if (pathIndex < aiBrain.pathfindingPath.Path.Count)
-                aiBrain.LookTowards(aiBrain.pathfindingPath.Path[pathIndex].position);
+            if (pathIndex < aiBrain.pathfindingPath.path.Count)
+                aiBrain.LookTowards(aiBrain.pathfindingPath.path[pathIndex].position);
             else
             {
                 if (aiBrain.pathfindingPath.IsOnLookingNode())

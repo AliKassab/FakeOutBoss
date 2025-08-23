@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PathfindingGrid : MonoBehaviour
@@ -21,12 +22,21 @@ public class PathfindingGrid : MonoBehaviour
             return;
         }
         Instance = this;
+        FillNodes();
+    }
+
+    public void FillNodes()
+    {
+        IsInitialized = false;
+        nodes.Clear();
+        List<PathfindingNode> nodesList = GetComponentsInChildren<PathfindingNode>().ToList<PathfindingNode>();
+        nodes = nodesList.ToDictionary(node => node.position, node => node);
+        IsInitialized = true;
     }
 
     [ContextMenu("Initialize Grid")]
     public void InitializeGrid()
     {
-        IsInitialized = false;
         nodes.Clear();
         int width = Mathf.RoundToInt(transform.localScale.x / cellSize);
         int height = Mathf.RoundToInt(transform.localScale.z / cellSize);
@@ -39,23 +49,18 @@ public class PathfindingGrid : MonoBehaviour
                 CreateNode(pos);
             }
         }
-        IsInitialized = true;
     }
 
     public void CreateNode(Vector3 position)
     {
-        if (!nodes.ContainsKey(position))
-        {
-            // Create a new GameObject for the node
-            GameObject nodeObj = new GameObject($"Node_{position.x}_{position.z}");
-            nodeObj.transform.parent = this.transform;
-            nodeObj.transform.position = position;
-            // Add a PathfindingNode component (must be a MonoBehaviour)
-            PathfindingNode nodeComp = nodeObj.AddComponent<PathfindingNode>();
-            nodeComp.position = position;
-            nodeComp.isWalkable = true;
-            nodes[position] = nodeComp;
-        }
+        // Create a new GameObject for the node
+        GameObject nodeObj = new GameObject($"Node_{position.x}_{position.z}");
+        nodeObj.transform.parent = this.transform;
+        nodeObj.transform.position = position;
+        // Add a PathfindingNode component (must be a MonoBehaviour)
+        PathfindingNode nodeComp = nodeObj.AddComponent<PathfindingNode>();
+        nodeComp.position = position;
+        nodeComp.isWalkable = true;
     }
 
     // Get all nodes as a list
