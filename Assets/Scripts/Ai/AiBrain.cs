@@ -23,7 +23,7 @@ public partial class AiBrain : MonoBehaviour
 
     private void Update()
     {
-        if (!GameData.Instance.IsGameActive) return;
+        //if (!GameData.Instance.IsGameActive) return;
         currentState?.Update();
     }
 

@@ -83,19 +83,9 @@ public class PathfindingGrid : MonoBehaviour
     // Get a node by position
     public PathfindingNode GetNodeByPosition(Vector3 position)
     {
-        // Round position to handle floating point precision issues
-        Vector3 roundedPos = new Vector3(
-            Mathf.Round(position.x / cellSize) * cellSize,
-            Mathf.Round(position.y / cellSize) * cellSize,
-            Mathf.Round(position.z / cellSize) * cellSize
-        );
-        
         PathfindingNode node;
-        if (nodes.TryGetValue(roundedPos, out node))
-            return node;
-            
-        // Fallback: try exact position
-        return nodes.TryGetValue(position, out node) ? node : null;
+        nodes.TryGetValue(position, out node);
+        return node;
     }
 
     // Get the nearest node to a given position

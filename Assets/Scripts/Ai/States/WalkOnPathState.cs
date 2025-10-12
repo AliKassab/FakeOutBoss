@@ -27,10 +27,7 @@ public class WalkOnPathState : IAiState
         || !aiBrain.pathfindingPath.IsValid
         || aiBrain.pathfindingPath.path.Count == 0
         || pathIndex >= aiBrain.pathfindingPath.path.Count)
-        {
-            aiBrain.ChangeState(new SittingState());
-            return; // CRITICAL: Exit early to prevent accessing invalid path
-        }
+            return;
 
         Vector3 target = aiBrain.pathfindingPath.path[pathIndex].position;
         aiBrain.target = target;
@@ -48,11 +45,6 @@ public class WalkOnPathState : IAiState
                     aiBrain.ChangeState(new LookingState());
                 else if (aiBrain.pathfindingPath.IsOnDrinkingNode())
                     aiBrain.ChangeState(new DrinkingState());
-                else
-                {
-                    // Fallback: return to sitting state if no special node reached
-                    aiBrain.ChangeState(new SittingState());
-                }
             }
         }
     }
