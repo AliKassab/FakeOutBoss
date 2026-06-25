@@ -2,11 +2,7 @@
 
 A stealth office comedy game: slack off at your desk, but switch back to "work" before the boss catches you looking. Push your luck between **overwork pressure** and **suspicion** — let either max out and you lose.
 
-<!-- Add a gameplay GIF here — it does more than any paragraph.
-![gameplay](docs/demo.gif) -->
-
-▶️ **Play the build:** _add itch.io / GitHub Release link_
-🎥 **Trailer / clip:** _add link_
+<img width="800" height="450" alt="FakeOutBOSS-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/6b20cb55-0bc2-4459-b70c-b7ce977bee91" />
 
 ## Built with
 - **Unity 6** (`6000.3.9f1`), C#
@@ -27,11 +23,3 @@ Assets/Scripts/
 ├── Gameplay/                # player, stats, key challenge, game data
 └── Misc/                    # managers, UI bars, timeline, time scaling
 ```
-
-## Running locally
-1. Install Unity **6000.3.9f1** (via Unity Hub).
-2. Clone and open this folder as a project.
-3. Open the main scene under `Assets/` and press Play.
-
-## License
-_Add a license (e.g. MIT)._
