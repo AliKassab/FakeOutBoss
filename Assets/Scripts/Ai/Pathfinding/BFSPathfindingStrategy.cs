@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class BFSPathfindingStrategy : IPathfindingStrategy
 {
-    PathfindingAlgorithm Name { get => PathfindingAlgorithm.BFS;}
+    public PathfindingAlgorithm Name => PathfindingAlgorithm.BFS;
 
     public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {
@@ -44,6 +44,8 @@ public class BFSPathfindingStrategy : IPathfindingStrategy
         while (current != start)
         {
             path.Add(current);
+            if (!cameFrom.ContainsKey(current))
+                return new List<PathfindingNode>(); // No path found
             current = cameFrom[current];
         }
 

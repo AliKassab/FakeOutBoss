@@ -19,6 +19,8 @@ public class DrinkingState : IAiState
     {
         timer -= Time.deltaTime;
         if (timer <= 0)
-            aiBrain.ChangeState(new WalkOnPathState());
+            // Walk back to the desk; WalkOnPathState transitions to Sitting on arrival,
+            // which re-runs the suspicion-weighted decision.
+            aiBrain.ChangeState(new WalkOnPathState(aiBrain.pathfindingPath.originNode));
     }
 }

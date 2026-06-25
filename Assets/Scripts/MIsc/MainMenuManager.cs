@@ -45,7 +45,9 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
     public void PlayGame()
     {
         clickAudio.Play();
-        TimeScaleManager.Instance.SetTimeScale(1f);
+        // Full reset (timeScale AND fixedDeltaTime) so a prior round's slow-mo/freeze
+        // can't carry corrupted time settings into this one.
+        TimeScaleManager.Instance.ResetTime();
         ToggleMenuUI(true);
         ToggleCameras(true);
     }

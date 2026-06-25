@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class DirectPathfindingStrategy : IPathfindingStrategy
 {
-    PathfindingAlgorithm Name { get => PathfindingAlgorithm.Direct; }
+    public PathfindingAlgorithm Name => PathfindingAlgorithm.Direct;
 
     public List<PathfindingNode> FindPath(PathfindingNode start, PathfindingNode end)
     {

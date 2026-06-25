@@ -31,6 +31,7 @@ public class DayTimer : MonoBehaviour
     private void WinDay()
     {
         WinScreen.SetActive(true);
-        Time.timeScale = 0f;
+        // Freeze via the manager so fixedDeltaTime is restored, not left corrupted.
+        TimeScaleManager.Instance.Freeze();
     }
 }

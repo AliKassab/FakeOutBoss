@@ -10,12 +10,15 @@ public class PathfindingNode : MonoBehaviour
     public List<PathfindingNode> GetNeighbors(PathfindingGrid grid)
     {
         List<PathfindingNode> neighbors = new List<PathfindingNode>();
+        // Step by the grid's cell size, not a hardcoded 1, so neighbor positions
+        // actually line up with placed nodes when cellSize != 1.
+        float step = grid.cellSize;
         Vector3[] directions = new Vector3[]
         {
-            Vector3.forward,
-            Vector3.back,
-            Vector3.left,
-            Vector3.right
+            Vector3.forward * step,
+            Vector3.back * step,
+            Vector3.left * step,
+            Vector3.right * step
         };
         foreach (Vector3 dir in directions)
         {

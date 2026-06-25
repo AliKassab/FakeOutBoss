@@ -67,6 +67,8 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
     {
         isChallengeActive = true;
         correctPresses = 0;
+        // Clear any stale spot flag so a previous round can't instant-fail this one.
+        GameData.Instance.IsSpotted = false;
         TimeScaleManager.Instance.DoSlowmotion();
         globalVolume.SetActive(true);
         GenerateNewKey();
@@ -99,7 +101,9 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
     {
         failScreen.SetActive(true);
         GameData.Instance.IsGameActive = false;
-        TimeScaleManager.Instance.SetTimeScale(0);
+        // Freeze (not raw SetTimeScale(0)): also restores fixedDeltaTime so the
+        // slow-mo value doesn't leak into the next round and crawl the bars.
+        TimeScaleManager.Instance.Freeze();
     }
     #endregion
 

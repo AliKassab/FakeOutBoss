@@ -13,25 +13,38 @@ public class PathfindingPath
     [HideInInspector] public PathfindingNode currentNode;
 
     public List<PathfindingNode> path = new List<PathfindingNode>();
-    private PathfindingNode startNode;
-    private PathfindingNode chosenEndNode;
-    private PathfindingNode originNode;
+
+    // The NPC's desk. Captured the first time it leaves so it can always walk back.
+    [HideInInspector] public PathfindingNode originNode;
 
     public void Initialize(IPathfindingStrategy strategy, Vector3 aiPosition)
     {
-        startNode = currentNode = PathfindingGrid.Instance.GetNearestNode(aiPosition);
-        if (originNode == null && startNode != null)
-            originNode = startNode;
+        PathfindingNode startNode = currentNode = PathfindingGrid.Instance.GetNearestNode(aiPosition);
+        if (originNode == null) originNode = startNode;
 
-        chosenEndNode = null;
         IsValid = false;
         path.Clear();
         if (PathfindingGrid.Instance.IsInitialized && startNode != null && endNodes.Count > 0)
         {
             // Randomly pick one end node
             int idx = UnityEngine.Random.Range(0, endNodes.Count);
-            chosenEndNode = endNodes[idx];
+            PathfindingNode chosenEndNode = endNodes[idx];
             path = strategy.FindPath(startNode, chosenEndNode);
+            IsValid = path != null && path.Count > 0;
+        }
+    }
+
+    // Build a path to a specific node (used for the return trip to the desk).
+    public void InitializeTo(IPathfindingStrategy strategy, Vector3 aiPosition, PathfindingNode target)
+    {
+        PathfindingNode startNode = currentNode = PathfindingGrid.Instance.GetNearestNode(aiPosition);
+        if (originNode == null) originNode = startNode;
+
+        IsValid = false;
+        path.Clear();
+        if (PathfindingGrid.Instance.IsInitialized && startNode != null && target != null)
+        {
+            path = strategy.FindPath(startNode, target);
             IsValid = path != null && path.Count > 0;
         }
     }

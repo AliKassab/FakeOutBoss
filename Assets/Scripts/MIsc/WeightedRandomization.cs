@@ -46,7 +46,9 @@ public class WeightedRandom
             }
         }
 
-        return null;
+        // Float edge case (randomValue == totalWeight): fall back to the last
+        // positive-weight item instead of returning null.
+        return calculatedWeights[calculatedWeights.Count - 1].state;
     }
 }
 

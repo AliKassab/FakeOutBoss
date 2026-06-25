@@ -29,14 +29,21 @@ public class PathfindingGrid : MonoBehaviour
     {
         IsInitialized = false;
         nodes.Clear();
-        List<PathfindingNode> nodesList = GetComponentsInChildren<PathfindingNode>().ToList<PathfindingNode>();
-        nodes = nodesList.ToDictionary(node => node.position, node => node);
+        // Build manually instead of ToDictionary: two nodes sharing a position would
+        // throw an ArgumentException and kill the whole grid. Last one wins, with a warning.
+        foreach (PathfindingNode node in GetComponentsInChildren<PathfindingNode>())
+        {
+            if (nodes.ContainsKey(node.position))
+                Debug.LogWarning($"Duplicate pathfinding node at {node.position}; overwriting.");
+            nodes[node.position] = node;
+        }
         IsInitialized = true;
     }
 
     [ContextMenu("Initialize Grid")]
     public void InitializeGrid()
     {
+        IsInitialized = false;
         nodes.Clear();
         int width = Mathf.RoundToInt(transform.localScale.x / cellSize);
         int height = Mathf.RoundToInt(transform.localScale.z / cellSize);
@@ -49,6 +56,7 @@ public class PathfindingGrid : MonoBehaviour
                 CreateNode(pos);
             }
         }
+        IsInitialized = true;
     }
 
     public void CreateNode(Vector3 position)
@@ -61,6 +69,8 @@ public class PathfindingGrid : MonoBehaviour
         PathfindingNode nodeComp = nodeObj.AddComponent<PathfindingNode>();
         nodeComp.position = position;
         nodeComp.isWalkable = true;
+        // Register so the grid is actually usable right after InitializeGrid.
+        nodes[position] = nodeComp;
     }
 
     // Get all nodes as a list
@@ -83,9 +93,21 @@ public class PathfindingGrid : MonoBehaviour
     // Get a node by position
     public PathfindingNode GetNodeByPosition(Vector3 position)
     {
-        PathfindingNode node;
-        nodes.TryGetValue(position, out node);
-        return node;
+        // Fast path: exact key match.
+        if (nodes.TryGetValue(position, out PathfindingNode node))
+            return node;
+
+        // Fallback: float arithmetic on cellSize can drift by a few ulps so an
+        // exact key miss doesn't mean "no node". Accept the nearest within a
+        // quarter cell.
+        float tol = cellSize * 0.25f;
+        float tolSqr = tol * tol;
+        foreach (var kvp in nodes)
+        {
+            if ((kvp.Key - position).sqrMagnitude <= tolSqr)
+                return kvp.Value;
+        }
+        return null;
     }
 
     // Get the nearest node to a given position
