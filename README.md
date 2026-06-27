@@ -1,5 +1,7 @@
 # FakeOutBoss
 
+### ▶ [Play in browser](https://alikassab.dev/FakeOutBoss/) — no download, runs instantly
+
 A stealth office comedy game: slack off at your desk, but switch back to "work" before the boss catches you looking. Push your luck between **overwork pressure** and **suspicion** — let either max out and you lose.
 
 <img width="800" height="450" alt="FakeOutBOSS-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/6b20cb55-0bc2-4459-b70c-b7ce977bee91" />
