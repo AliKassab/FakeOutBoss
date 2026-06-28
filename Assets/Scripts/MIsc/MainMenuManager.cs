@@ -25,6 +25,12 @@ public class MainMenuManager : SingletonMO<MainMenuManager>
 
     private void OnEnable()
     {
+        // timeScale/fixedDeltaTime are GLOBAL engine state — LoadScene does NOT reset
+        // them. A prior round's Freeze (timeScale 0) or slow-mo (corrupted fixedDeltaTime)
+        // survives the reload and makes the next round's bars crawl. Normalize on every
+        // scene load so no leaked time state can carry over, whatever path got us here.
+        TimeScaleManager.Instance.ResetTime();
+
         playButton.onClick.AddListener(PlayGame);
         quitButton.onClick.AddListener(Quit);
         infoButton.onClick.AddListener(OpenInfoPanel);

@@ -12,6 +12,12 @@ public partial class AiBrain : MonoBehaviour
     private IAiState currentState;
     public CharacterData Data => characterData;
 
+    [Header("Catch Telegraph")]
+    [Tooltip("World-space '!' icon shown above this boss when it starts looking. Optional.")]
+    [SerializeField] private GameObject alertIcon;
+    [Tooltip("Audio sting played the moment this boss starts looking. Optional.")]
+    [SerializeField] private AudioSource alertSound;
+
     // Offsets the seed per-brain so bosses spawned on the same frame (same TickCount)
     // don't run identical, synchronized RNG sequences.
     private static int seedCounter = 0;
@@ -22,6 +28,7 @@ public partial class AiBrain : MonoBehaviour
         Random.InitState(System.Environment.TickCount + (seedCounter++ * 7919));
         pathfindingStrategy = PathfindingAlgorithms.Instance.Strategies[pathfindingAlgorithm];
 
+        HideAlert();
         ChangeState(new SittingState());
 
     }
@@ -49,4 +56,16 @@ public partial class AiBrain : MonoBehaviour
     }
 
     public void ChangeAnimation(string animationName) => animator.Play(animationName);
+
+    public void ShowAlert()
+    {
+        if (alertIcon != null) alertIcon.SetActive(true);
+        // Unscaled-safe: AudioSource ignores timeScale, so the sting still fires in slow-mo.
+        if (alertSound != null) alertSound.Play();
+    }
+
+    public void HideAlert()
+    {
+        if (alertIcon != null) alertIcon.SetActive(false);
+    }
 }

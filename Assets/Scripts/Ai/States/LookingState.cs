@@ -6,23 +6,34 @@ public class LookingState : IAiState
 {
     private AiBrain aiBrain;
     private float timer;
+    private float duration;
 
     public void Enter(AiBrain aiBrain)
     {
         this.aiBrain = aiBrain;
-        this.timer = aiBrain.Data.LookingDuration;
+        this.duration = aiBrain.Data.LookingDuration;
+        this.timer = duration;
         aiBrain.ChangeAnimation("Looking");
         GameData.Instance.IsAILooking = true;
+        GameData.Instance.LookProgress = 1f;
+        // Telegraph the catch: "!" icon + audio sting the instant the boss turns.
+        aiBrain.ShowAlert();
     }
 
     public void Exit()
-        => GameData.Instance.IsAILooking = false;
+    {
+        GameData.Instance.IsAILooking = false;
+        GameData.Instance.LookProgress = 1f;
+        aiBrain.HideAlert();
+    }
 
     public void Update()
     {
         // Unscaled on purpose: the spot timer is real-time pressure even while the
         // key-challenge slow-mo (timeScale 0.05) is active.
         timer -= Time.unscaledDeltaTime;
+        // Feed the QTE ring: 1 -> 0 as the catch window closes.
+        GameData.Instance.LookProgress = Mathf.Clamp01(timer / duration);
 
         // Player stopped slacking (working again) or passed the challenge: the boss
         // saw nothing worth catching, so walk back to the desk (which then sits).

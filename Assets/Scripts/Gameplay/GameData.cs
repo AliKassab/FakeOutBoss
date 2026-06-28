@@ -32,6 +32,7 @@ public class GameData : ScriptableObject
         IsPlaying = true;
         IsGameActive = false;
         IsSpotted = false;
+        LookProgress = 1f;
     }
 
     public string ChallengeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -40,6 +41,10 @@ public class GameData : ScriptableObject
     public bool IsAILooking = false;
     public bool IsGameActive = false;
     public bool IsSpotted = false;
+
+    // 1 = boss just started looking, 0 = caught. Drives the QTE timer ring.
+    // NonSerialized so it never persists on the asset between play sessions.
+    [System.NonSerialized] public float LookProgress = 1f;
     public int creditNamesIndex = 0;
     public static List<AnimationDelay> AnimationClips => Instance.animationDelays;
 

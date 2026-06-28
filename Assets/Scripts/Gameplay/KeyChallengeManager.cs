@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
@@ -13,11 +14,20 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
     [SerializeField] GameObject globalVolume;
     [SerializeField] AudioSource keyPressSound;
     [SerializeField] GameObject failScreen;
+    [Tooltip("Radial Image (fill type) that drains as the catch window closes. Optional.")]
+    [SerializeField] Image challengeTimerRing;
 
     [Header("Challenge Settings")]
     [SerializeField] int requiredCorrectPresses = 3;
     [SerializeField] Vector2 popUpSize = new Vector2(100, 100);
     [SerializeField] float fadeDuration = 0.5f;
+
+    [Header("Juice")]
+    [Tooltip("Ring color when the catch window is full -> empty.")]
+    [SerializeField] Color ringSafeColor = new Color(0.3f, 1f, 0.4f);
+    [SerializeField] Color ringDangerColor = new Color(1f, 0.2f, 0.2f);
+    [Tooltip("Scale punch on a correct key press.")]
+    [SerializeField] float correctPopScale = 1.4f;
     #endregion
 
     #region Private Variables
@@ -47,11 +57,21 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
             return;
         }
 
+        UpdateTimerRing();
+
         if (Input.anyKeyDown)
             HandleKeyPress();
 
         if (GameData.Instance.IsSpotted)
             FailChallenge();
+    }
+
+    void UpdateTimerRing()
+    {
+        if (challengeTimerRing == null) return;
+        float t = GameData.Instance.LookProgress;
+        challengeTimerRing.fillAmount = t;
+        challengeTimerRing.color = Color.Lerp(ringDangerColor, ringSafeColor, t);
     }
     #endregion
 
@@ -71,6 +91,11 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
         GameData.Instance.IsSpotted = false;
         TimeScaleManager.Instance.DoSlowmotion();
         globalVolume.SetActive(true);
+        if (challengeTimerRing != null)
+        {
+            challengeTimerRing.gameObject.SetActive(true);
+            challengeTimerRing.fillAmount = 1f;
+        }
         GenerateNewKey();
     }
 
@@ -88,7 +113,12 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
             else
                 GenerateNewKey();
         }
-        else GameData.Instance.IsSpotted = true;
+        else
+        {
+            // Wrong key = busted. Slam the feedback before the fail resolves.
+            if (ScreenJuice.Instance != null) { ScreenJuice.Instance.Shake(); ScreenJuice.Instance.Flash(); }
+            GameData.Instance.IsSpotted = true;
+        }
     }
 
     void PassChallenge()
@@ -139,6 +169,7 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
             Debug.LogError("Key popup prefab missing TextMeshProUGUI component!");
 
         StartFadeEffect(currentKeyPopup.AddComponent<CanvasGroup>());
+        StartCoroutine(PopInRoutine(currentKeyPopup.transform));
     }
 
     void StartFadeEffect(CanvasGroup canvasGroup)
@@ -182,7 +213,26 @@ public class KeyChallengeManager : SingletonMO<KeyChallengeManager>
         GameData.Instance.IsAILooking = false;
         GameData.Instance.IsPlaying = false;
         globalVolume.SetActive(false);
+        if (challengeTimerRing != null) challengeTimerRing.gameObject.SetActive(false);
         TimeScaleManager.Instance.ResetTime();
+    }
+
+    // Scale-in pop so each new key punches onto screen instead of just appearing.
+    IEnumerator PopInRoutine(Transform t)
+    {
+        if (t == null) yield break;
+        float dur = 0.14f, e = 0f;
+        while (e < dur && t != null)
+        {
+            // Overshoot 0 -> correctPopScale -> 1, unscaled so it reads during slow-mo.
+            float k = e / dur;
+            float s = Mathf.LerpUnclamped(0f, correctPopScale, Mathf.Sin(k * Mathf.PI * 0.5f));
+            if (k > 0.6f) s = Mathf.Lerp(correctPopScale, 1f, (k - 0.6f) / 0.4f);
+            t.localScale = Vector3.one * s;
+            e += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        if (t != null) t.localScale = Vector3.one;
     }
 
     void CleanupExistingKey()
