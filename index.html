@@ -1,133 +1,233 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | OfficeBoy</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">OfficeBoy</div>
-      </div>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FakeOutBoss — Ali Kassab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#0e0a05; --panel:#1e1408; --panel-2:#090705;
+      --parch:#f4ead6; --parch-2:#e4d0a0;
+      --gold:#c8a060; --gold-bright:#e0c888; --gold-dim:#7a6438;
+      --seal:#7a2818; --seal-dark:#601e12;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{
+      min-height:100%;
+      color:var(--parch);
+      font-family:'EB Garamond',serif;
+      background-color:var(--ink);
+      background-image:
+        repeating-linear-gradient(92deg,
+          transparent 0px, rgba(20,12,4,.4) 2px, transparent 5px, rgba(255,230,160,.018) 7px, transparent 11px),
+        radial-gradient(120% 90% at 50% 0%, rgba(52,34,12,.75) 0%, transparent 55%),
+        radial-gradient(140% 120% at 50% 120%, rgba(8,5,2,.55) 0%, transparent 60%);
+      display:flex; flex-direction:column; align-items:center;
+      padding:clamp(1rem,3vw,2.5rem);
+      position:relative; overflow-x:hidden;
+    }
+    /* fine grain / parchment noise overlay */
+    body::after{
+      content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+      opacity:.09; mix-blend-mode:soft-light;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    a{color:var(--gold); text-decoration:none; transition:color .25s ease}
+    a:hover{color:var(--gold-bright)}
+
+    /* ── top bar ─────────────────────────────────── */
+    .topbar{
+      width:100%; max-width:1040px; z-index:1;
+      display:flex; align-items:center; justify-content:space-between;
+      font-family:'EB Garamond',serif; letter-spacing:.18em; text-transform:uppercase;
+      font-size:.72rem; color:var(--gold-dim);
+    }
+    .topbar a.back:hover{color:var(--gold-bright)}
+    .topbar .mark{color:var(--gold); letter-spacing:.32em}
+
+    /* ── title block ─────────────────────────────── */
+    .title-wrap{text-align:center; z-index:1; margin:clamp(1rem,3.5vh,2.2rem) 0 1rem}
+    .ornament{color:var(--gold-dim); font-size:1rem; letter-spacing:.6em; margin-bottom:.6rem}
+    h1{
+      margin:0; font-family:'Cinzel Decorative',serif; font-weight:700;
+      font-size:clamp(2rem,6vw,3.6rem); line-height:1.05; letter-spacing:.04em;
+      background:linear-gradient(180deg,var(--gold-bright),var(--parch-2) 45%,var(--gold) 70%,var(--gold-dim));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow:0 1px 0 rgba(0,0,0,.4);
+    }
+    .subtitle{
+      margin:.55rem auto 0; max-width:44ch;
+      font-family:'Cormorant Garamond',serif; font-style:italic;
+      font-size:clamp(1rem,2.4vw,1.3rem); color:var(--parch-2); opacity:.9;
+    }
+
+    /* ── framed game plate ───────────────────────── */
+    .plate{
+      position:relative; z-index:1;
+      width:min(960px,94vw); aspect-ratio:16/10;
+      padding:10px; border-radius:3px;
+      background:linear-gradient(160deg,#3a2c18,#1e1408 60%,#090705);
+      border:1px solid var(--gold-dim);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,.6),
+        0 18px 50px rgba(0,0,0,.7),
+        inset 0 0 60px rgba(0,0,0,.55);
+    }
+    .plate::before{ /* inner gilt line */
+      content:""; position:absolute; inset:4px; border:1px solid rgba(200,160,96,.45);
+      border-radius:2px; pointer-events:none;
+    }
+    .corner{position:absolute; color:var(--gold); font-size:1.1rem; line-height:1; z-index:3; opacity:.85}
+    .corner.tl{top:2px; left:6px} .corner.tr{top:2px; right:6px}
+    .corner.bl{bottom:2px; left:6px} .corner.br{bottom:2px; right:6px}
+
+    #unity-canvas{
+      display:block; width:100%; height:100%;
+      background:#0b0a08; border-radius:2px;
+    }
+
+    /* ── loading bar ─────────────────────────────── */
+    #unity-loading-bar{
+      position:absolute; inset:0; z-index:4; display:none;
+      flex-direction:column; align-items:center; justify-content:center; gap:1rem;
+    }
+    #unity-loading-bar .load-label{
+      font-family:'Cinzel',serif; letter-spacing:.42em; text-transform:uppercase;
+      font-size:.78rem; color:var(--gold);
+    }
+    #unity-progress-bar-empty{
+      width:min(340px,60%); height:10px; padding:2px;
+      background:var(--panel); border:1px solid var(--gold-dim); border-radius:2px;
+      box-shadow:inset 0 1px 3px rgba(0,0,0,.7);
+    }
+    #unity-progress-bar-full{
+      width:0%; height:100%; border-radius:1px;
+      background:linear-gradient(90deg,var(--gold-dim),var(--gold) 60%,var(--gold-bright));
+      transition:width .15s ease;
+    }
+
+    /* ── controls / footer ───────────────────────── */
+    .controls{z-index:1; margin-top:1.4rem; display:flex; gap:1rem; align-items:center}
+    .btn-seal{
+      display:inline-flex; align-items:center; gap:.5rem; cursor:pointer;
+      font-family:'EB Garamond',serif; text-transform:uppercase;
+      letter-spacing:.28em; font-weight:600; font-size:.72rem;
+      padding:.75rem 1.6rem; border-radius:2px;
+      background:var(--seal); color:var(--parch); border:1px solid var(--seal);
+      transition:background .2s ease,border-color .2s ease,transform .1s ease;
+    }
+    .btn-seal:hover{background:var(--seal-dark); border-color:var(--gold-dim)}
+    .btn-seal:active{transform:translateY(1px)}
+    .hint{font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--gold-dim); font-size:1rem}
+
+    footer{
+      z-index:1; margin-top:auto; padding-top:2rem; text-align:center;
+      font-family:'EB Garamond',serif; letter-spacing:.14em; text-transform:uppercase;
+      font-size:.66rem; color:var(--gold-dim);
+    }
+
+    #unity-warning{position:fixed; left:50%; top:12px; transform:translateX(-50%); z-index:20}
+    #unity-warning div{margin:4px 0; border-radius:3px}
+
+    @media (max-width:600px){
+      .btn-seal{letter-spacing:.18em; padding:.65rem 1.1rem}
+      .subtitle{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a class="back" href="https://alikassab.dev">&larr; alikassab.dev</a>
+    <span class="mark">Ali Kassab</span>
+  </div>
+
+  <div class="title-wrap">
+    <div class="ornament">&#10070; &#10086; &#10070;</div>
+    <h1>FakeOutBoss</h1>
+    <p class="subtitle">A stealth office comedy — slack at your desk, but look busy before the boss catches you.</p>
+  </div>
+
+  <div id="unity-container" class="plate">
+    <span class="corner tl">&#10070;</span>
+    <span class="corner tr">&#10070;</span>
+    <span class="corner bl">&#10070;</span>
+    <span class="corner br">&#10070;</span>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div class="load-label">Summoning the Office</div>
+      <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
     </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
+    <div id="unity-warning"></div>
+  </div>
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+  <div class="controls">
+    <button id="unity-fullscreen-button" class="btn-seal">&#9974; Fullscreen</button>
+    <span class="hint">Space to slack &middot; type the letters when spotted</span>
+  </div>
+
+  <footer>&#10070; Built in Unity &middot; alikassab.dev &#10070;</footer>
+
+  <script>
+    var canvas = document.querySelector("#unity-canvas");
+
+    function unityShowBanner(msg, type) {
+      var warningBanner = document.querySelector("#unity-warning");
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
       }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/FakeOutBOSS.loader.js";
-      var config = {
-        arguments: [],
-        dataUrl: buildUrl + "/FakeOutBOSS.data.unityweb",
-        frameworkUrl: buildUrl + "/FakeOutBOSS.framework.js.unityweb",
-        codeUrl: buildUrl + "/FakeOutBOSS.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "OfficeBoy",
-        productVersion: "0.1.0",
-        showBanner: unityShowBanner,
-        // errorHandler: function(err, url, line) {
-        //    alert("error " + err + " occurred at line " + line);
-        //    // Return 'true' if you handled this error and don't want Unity
-        //    // to process it further, 'false' otherwise.
-        //    return true;
-        // },
-      };
-
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
-        canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background:#7a2818;color:#f4ead6;padding:10px;';
+      else {
+        if (type == 'warning') div.style = 'background:#a88432;color:#0e0a05;padding:10px;';
+        setTimeout(function () { warningBanner.removeChild(div); updateBannerVisibility(); }, 5000);
       }
+      updateBannerVisibility();
+    }
 
-      document.querySelector("#unity-loading-bar").style.display = "block";
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/FakeOutBOSS.loader.js";
+    var config = {
+      arguments: [],
+      dataUrl: buildUrl + "/FakeOutBOSS.data.unityweb",
+      frameworkUrl: buildUrl + "/FakeOutBOSS.framework.js.unityweb",
+      codeUrl: buildUrl + "/FakeOutBOSS.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "FakeOutBoss",
+      productVersion: "0.1.0",
+      showBanner: unityShowBanner,
+    };
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      var meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      document.querySelector("#unity-container").className = "unity-mobile plate";
+    }
 
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+    document.querySelector("#unity-loading-bar").style.display = "flex";
 
-      document.body.appendChild(script);
-
-    </script>
-  </body>
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        document.querySelector("#unity-loading-bar").style.display = "none";
+        document.querySelector("#unity-fullscreen-button").onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+      }).catch((message) => { alert(message); });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
 </html>
